@@ -1,3 +1,5 @@
+#ifndef GAMEOBJ_H
+#define GAMEOBJ_H
 
 
 class gameObj
@@ -9,7 +11,7 @@ class gameObj
         float height;
         float width;
 
-    public:
+    /*public:
 
         virtual float getX();
         virtual void setX(float x);
@@ -21,5 +23,7 @@ class gameObj
         virtual void setHeight(float height);
 
         virtual float getWidth();
-        virtual void setWidth(float width);
+        virtual void setWidth(float width);*/
 };
+
+#endif

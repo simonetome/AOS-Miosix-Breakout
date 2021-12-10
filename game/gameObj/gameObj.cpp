@@ -7,7 +7,7 @@
     float height;
     float width;
 
-    float getX()
+   /* float getX()
     {
         return x;
     }
@@ -41,4 +41,4 @@
     void setWidth(float width_)
     {
         width=width_;
-    }
+    }*/

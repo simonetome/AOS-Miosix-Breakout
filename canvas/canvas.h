@@ -1,3 +1,5 @@
+#ifndef CANVAS_H
+#define CANVAS_H
 
 #include <string>
 #include <termios.h>
@@ -14,6 +16,7 @@ class Canvas{
         //and not print it on the terminal
         void setCanvasMode();
         //reset default settings of the terminal
+        void changeCanvasMode();
         ~Canvas();
         //clear the screen
         void resetCanvas();
@@ -28,3 +31,6 @@ class Canvas{
 
 
 };
+
+#endif
+
