@@ -7,8 +7,8 @@
 #include "miosix.h"
 #include <thread>
 
-#include "canvas/canvas.h"
-#include "game/game.h"
+#include "Arkanoid/game.h"
+#include "Arkanoid/terminal.h"
 
 using namespace std;
 using namespace miosix;
@@ -17,15 +17,16 @@ using namespace miosix;
 
 int main()
 {	
-	Canvas canvas;
-	canvas.resetCanvas();
+	Terminal::reset();
 
-	printf("press any key to start the game\n");
-	fflush(stdout);
+	Terminal::print("Press any key to start the game.\n");
+
 	getchar();
-	canvas.resetCanvas();
-	Game game;
-	game.newGame(canvas);
+
+	Terminal::reset();
+	
+	Game game();
+
 	return 0;
 
 }
