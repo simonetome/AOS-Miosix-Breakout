@@ -1,9 +1,13 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#define COL 30
-#define ROW 20
-#define BLOCK_ROW 4
-#define BLOCK_WIDTH 2
+#define PADDLE_WIDTH 10
+#define BLOCK_WIDTH 4
+
+#define CANVAS_WIDTH 80
+#define CANVAS_HEIGHT 35
+
+#define BLOCK "\u2589"
+#define BALL "\u2b24"
 
 #endif 

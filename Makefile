@@ -20,12 +20,13 @@ SUBDIRS := $(KPATH)
 ##
 SRC :=                                  \
 main.cpp \
-Arkanoid/ball.cpp \
-Arkanoid/block.cpp \
 Arkanoid/canvas.cpp \
 Arkanoid/game.cpp \
-Arkanoid/paddle.cpp \
+Arkanoid/gameObj.cpp \
 Arkanoid/terminal.cpp \
+Arkanoid/block.cpp \
+Arkanoid/paddle.cpp \
+Arkanoid/ball.cpp \
 
 ##
 ## List here additional static libraries with relative path

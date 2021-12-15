@@ -3,9 +3,13 @@
 
 #include "gameObj.h"
 
-class Block : public gameObj
-{
+class Block: public GameObj{
+
+public:
+    Block(int x, int y);
     
 };
 
-#endif
+
+
+#endif 

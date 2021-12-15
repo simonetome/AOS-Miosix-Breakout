@@ -2,28 +2,18 @@
 #define GAMEOBJ_H
 
 
-class gameObj
+class GameObj
 {
-    private:
+    public:
+        int x;
+        int y;
+        int width;
+        const char * shape;
+        int oldX = -1;
+        int oldY = -1;
+        GameObj(int x, int y,int width, const char * shape);
+        
 
-        float x;
-        float y;
-        float height;
-        float width;
-
-    /*public:
-
-        virtual float getX();
-        virtual void setX(float x);
-
-        virtual float getY();
-        virtual void setY(float y);
-
-        virtual float getHeight();
-        virtual void setHeight(float height);
-
-        virtual float getWidth();
-        virtual void setWidth(float width);*/
 };
 
 #endif

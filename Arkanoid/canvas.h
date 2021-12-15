@@ -4,9 +4,10 @@
 #include <string>
 #include <termios.h>
 #include <unistd.h>
-#include "block.h"
-#include "ball.h"
-#include "paddle.h"
+#include <list>
+#include "settings.h"
+#include "terminal.h"
+#include "gameObj.h"
 
 
 class Canvas{
@@ -14,6 +15,7 @@ class Canvas{
         Canvas();
         // set the echo and icanon mode to get in input only one characther
         //and not print it on the terminal
+        /*
         void setCanvasMode();
         //reset default settings of the terminal
         void changeCanvasMode();
@@ -28,8 +30,9 @@ class Canvas{
         void updatePaddlePosition(Paddle paddle);
         //print Block
         void printBlock(Block block);
-
-
+        */
+        void drawFrame(const std::list<GameObj*> & changed);
+        void drawField(const std::list<GameObj> & gameObjects);
 };
 
 #endif

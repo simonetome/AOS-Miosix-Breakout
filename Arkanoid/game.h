@@ -4,21 +4,23 @@
 #include <list>
 #include <string.h>
 #include "canvas.h"
+#include "gameObj.h"
+#include "block.h"
 
 class Game{
 
 public:
     Game();
     ~Game();
-    
-    void newGame();
+    void startGame();
     
 private:
 
     Canvas canvas;
     int score;
-    char grid [20][40];
-
+    std::list<GameObj> gameObjects;
+    std::list<GameObj*> changed;
+    
 };
 
 #endif
