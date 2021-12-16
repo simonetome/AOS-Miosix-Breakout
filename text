@@ -69,7 +69,7 @@ tcgetattr(STDIN_FILENO,&t);
 t.c_lflag |= (ICANON);
 tcsetattr(STDIN_FILENO,TCSANOW,&t);      
         
-printf("\e[1;1H\e[2J\n");
+printf("\e[1;1H\e[2J\n"); 
 printf("\x1b[%d;%dH",5,lastX);
 printf("\x1b[999;999H");
 

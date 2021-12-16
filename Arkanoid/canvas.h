@@ -32,7 +32,7 @@ class Canvas{
         void printBlock(Block block);
         */
         void drawFrame(const std::list<GameObj*> & changed);
-        void drawField(const std::list<GameObj> & gameObjects);
+        void drawField(const std::list<GameObj*> & gameObjects);
 };
 
 #endif

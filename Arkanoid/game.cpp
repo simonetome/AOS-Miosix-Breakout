@@ -3,6 +3,7 @@
 #include "ball.h"
 #include "paddle.h"
 #include <thread>
+#include "input.h"
 
 Game::Game():canvas(),score(0)
 {
@@ -12,31 +13,37 @@ Game::Game():canvas(),score(0)
 void Game::startGame()
 {
     score=0;
-    
-    Block b(5,5);
-    Paddle paddle(20,20);
-    
-    gameObjects.push_front(b);
-    gameObjects.push_front(paddle);
-    
 
+    Paddle * paddle = new Paddle(10,10);
     Ball * ball = new Ball(10,10);
 
-    canvas.drawField(gameObjects);
+    std::thread inputTh(Input::inputController,paddle);    
 
-    changed.push_front(ball); // ball is always moving 
+    gameObjects.push_front(paddle);
+    gameObjects.push_front(ball);
+    
+
+    //canvas.drawField(gameObjects);
+
+
+    //changed.push_front(ball); 
+    changed.push_front(paddle);
 
     for(;;){
 
+        /*
         ball -> oldX = ball -> x;
         ball -> oldY = ball -> y;
         ball -> x += ball -> xDir;
         ball -> y += ball -> yDir;
+        */
 
         canvas.drawFrame(changed);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(80));
+        std::this_thread::sleep_for(std::chrono::milliseconds(150));
     }
+
+    inputTh.join();
 
 }
 

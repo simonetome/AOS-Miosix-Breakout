@@ -10,7 +10,8 @@ namespace Terminal
     void delXY(const int & x, const int & y);
     void printXY(const int & x, const int & y,const char * string);
     void printAndDelXY(const int & oldX,const int & oldY,const int & x, const int & y,const char * string);
-    void drawObject(const GameObj & obj);
+    void delObject(const GameObj * obj);
+    void drawObject(const GameObj * obj);
     void reset();
     
 }

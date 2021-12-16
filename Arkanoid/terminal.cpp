@@ -41,9 +41,16 @@ namespace Terminal
         fflush(stdout);
     }
 
-    void drawObject(const GameObj & obj){
-        for(int i = 0; i < obj.width; i++){
-            printf("\x1b[%d;%dH%s",obj.y,obj.x+i,obj.shape);
+    void delObject(const GameObj * obj){
+
+        printf("\x1b[%d;%dHE",obj->oldY,obj->oldX);
+        fflush(stdout);
+        
+    }
+
+    void drawObject(const GameObj * obj){
+        for(int i = 0; i < obj->width; i++){
+            printf("\x1b[%d;%dH%s",obj->y,obj->x+i,obj->shape);
         }
         fflush(stdout);
     }

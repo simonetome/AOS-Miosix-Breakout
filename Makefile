@@ -27,6 +27,7 @@ Arkanoid/terminal.cpp \
 Arkanoid/block.cpp \
 Arkanoid/paddle.cpp \
 Arkanoid/ball.cpp \
+Arkanoid/input.cpp \
 
 ##
 ## List here additional static libraries with relative path

@@ -5,6 +5,7 @@
 #include <string.h>
 #include "canvas.h"
 #include "gameObj.h"
+#include "paddle.h"
 #include "block.h"
 
 class Game{
@@ -13,12 +14,12 @@ public:
     Game();
     ~Game();
     void startGame();
-    
+
 private:
 
     Canvas canvas;
     int score;
-    std::list<GameObj> gameObjects;
+    std::list<GameObj*> gameObjects;
     std::list<GameObj*> changed;
     
 };
