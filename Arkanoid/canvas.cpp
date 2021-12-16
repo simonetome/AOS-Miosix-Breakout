@@ -9,6 +9,7 @@ Canvas::Canvas(){
 void Canvas::drawFrame(const std::list<GameObj*> & changed){
     for (auto const& obj : changed){
         Terminal::delObject(obj);
+       
         Terminal::drawObject(obj);
     }
 }

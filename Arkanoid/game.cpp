@@ -17,6 +17,7 @@ void Game::startGame()
     Paddle * paddle = new Paddle(10,10);
     Ball * ball = new Ball(10,10);
 
+    paddle->oldY=paddle->y;
     std::thread inputTh(Input::inputController,paddle);    
 
     gameObjects.push_front(paddle);
@@ -40,7 +41,7 @@ void Game::startGame()
 
         canvas.drawFrame(changed);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(150));
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
     inputTh.join();
