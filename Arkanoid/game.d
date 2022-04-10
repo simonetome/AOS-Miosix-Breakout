@@ -1,21 +1,17 @@
 Arkanoid/game.o: Arkanoid/game.cpp Arkanoid/game.h Arkanoid/canvas.h \
- Arkanoid/settings.h Arkanoid/terminal.h Arkanoid/gameObj.h \
- Arkanoid/paddle.h Arkanoid/block.h Arkanoid/ball.h Arkanoid/input.h
+ Arkanoid/block.h Arkanoid/shape.h Arkanoid/paddle.h Arkanoid/sphere.h \
+ Arkanoid/settings.h
 
 Arkanoid/game.h:
 
 Arkanoid/canvas.h:
 
-Arkanoid/settings.h:
+Arkanoid/block.h:
 
-Arkanoid/terminal.h:
-
-Arkanoid/gameObj.h:
+Arkanoid/shape.h:
 
 Arkanoid/paddle.h:
 
-Arkanoid/block.h:
+Arkanoid/sphere.h:
 
-Arkanoid/ball.h:
-
-Arkanoid/input.h:
+Arkanoid/settings.h:

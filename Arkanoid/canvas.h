@@ -1,39 +1,25 @@
 #ifndef CANVAS_H
 #define CANVAS_H
-
-#include <string>
-#include <termios.h>
-#include <unistd.h>
 #include <list>
-#include "settings.h"
-#include "terminal.h"
-#include "gameObj.h"
-
+#include "block.h"
+#include "paddle.h"
+#include "sphere.h"
+#include "shape.h"
+#include <memory>
 
 class Canvas{
+
     public:
-        Canvas();
-        // set the echo and icanon mode to get in input only one characther
-        //and not print it on the terminal
-        /*
-        void setCanvasMode();
-        //reset default settings of the terminal
-        void changeCanvasMode();
-        ~Canvas();
-        //clear the screen
-        void resetCanvas();
-        //print board
-        void printTheBoard();
-        //update ball position on the board
-        void updateBallPosition(Ball ball);
-        //update paddle position
-        void updatePaddlePosition(Paddle paddle);
-        //print Block
-        void printBlock(Block block);
-        */
-        void drawFrame(const std::list<GameObj*> & changed);
-        void drawField(const std::list<GameObj*> & gameObjects);
+        void reset();
+        void drawWalls();
+        void drawObject(Shape& object);  
+        void deleteObject(Shape& object);
+        void movePaddle(Shape& object, int rowDirection);
+        void moveSphere(Shape& object, int rowDirection, int colDirection);
+        void firstRender(std::list<std::unique_ptr<Block>>& blocks,std::unique_ptr<Paddle>& paddle, std::unique_ptr<Sphere>& sphere);
+    private:
+
 };
 
-#endif
 
+#endif

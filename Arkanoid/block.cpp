@@ -1,6 +1,9 @@
 #include "block.h"
 #include "settings.h"
 
-Block::Block(int x, int y): GameObj(x,y,BLOCK_WIDTH,BLOCK){
-
+Block::Block(int row, int col){
+    this->row = row;
+    this->col = col;
+    this->width = BRICKWIDTH;
+    this->shapestr = BRICK;
 }

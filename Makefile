@@ -22,12 +22,10 @@ SRC :=                                  \
 main.cpp \
 Arkanoid/canvas.cpp \
 Arkanoid/game.cpp \
-Arkanoid/gameObj.cpp \
-Arkanoid/terminal.cpp \
 Arkanoid/block.cpp \
 Arkanoid/paddle.cpp \
-Arkanoid/ball.cpp \
-Arkanoid/input.cpp \
+Arkanoid/sphere.cpp \
+Arkanoid/shape.cpp \
 
 ##
 ## List here additional static libraries with relative path

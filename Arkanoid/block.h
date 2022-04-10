@@ -1,15 +1,16 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#include "gameObj.h"
+#include <string>
+#include "shape.h"
 
-class Block: public GameObj{
+class Block: public Shape{
 
-public:
-    Block(int x, int y);
-    
+    public:
+        Block(int row, int col);
+    private:
+
 };
 
 
-
-#endif 
+#endif

@@ -64,7 +64,7 @@ const unsigned int AUX_TIMER_MAX=0xffff; ///<\internal Aux timer is 16 bits
 
 /// Serial port (USART3 PB10=TX, PB11=RX)
 const unsigned int defaultSerial=3;
-const unsigned int defaultSerialSpeed=115200;
+const unsigned int defaultSerialSpeed=921600;
 //const unsigned int defaultSerialSpeed=576000;
 const bool defaultSerialFlowctrl=false;
 // Aux serial port (hardcoded USART2 PA2=TX, PA3=RX).

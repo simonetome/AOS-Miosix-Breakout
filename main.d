@@ -31,9 +31,8 @@ main.o: main.cpp miosix/miosix.h miosix/interfaces/arch_registers.h \
  miosix/stdlib_integration/libstdcpp_integration.h miosix/kernel/error.h \
  miosix/kernel/kernel.h miosix/kernel/sync.h miosix/kernel/queue.h \
  miosix/kernel/error.h miosix/util/util.h miosix/config/miosix_settings.h \
- Arkanoid/game.h Arkanoid/canvas.h Arkanoid/settings.h \
- Arkanoid/terminal.h Arkanoid/gameObj.h Arkanoid/paddle.h \
- Arkanoid/block.h Arkanoid/terminal.h Arkanoid/settings.h
+ Arkanoid/game.h Arkanoid/canvas.h Arkanoid/block.h Arkanoid/shape.h \
+ Arkanoid/paddle.h Arkanoid/sphere.h
 
 miosix/miosix.h:
 
@@ -125,16 +124,10 @@ Arkanoid/game.h:
 
 Arkanoid/canvas.h:
 
-Arkanoid/settings.h:
+Arkanoid/block.h:
 
-Arkanoid/terminal.h:
-
-Arkanoid/gameObj.h:
+Arkanoid/shape.h:
 
 Arkanoid/paddle.h:
 
-Arkanoid/block.h:
-
-Arkanoid/terminal.h:
-
-Arkanoid/settings.h:
+Arkanoid/sphere.h:

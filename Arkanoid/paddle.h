@@ -1,15 +1,17 @@
-#ifndef PADDLE_H 
+#ifndef PADDLE_H
 #define PADDLE_H
 
-#include "gameObj.h"
+#include "shape.h"
+#include <string>
 
-class Paddle: public GameObj{
+class Paddle: public Shape{
 
-public:
-    Paddle(int x, int y);
-    int xDir = 0;
-    int yDir = 1; 
+    public:
+        Paddle(int row, int col);
+    private:
+        
 
 };
+
 
 #endif

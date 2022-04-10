@@ -1,54 +1,69 @@
 #include "game.h"
-#include "block.h"
-#include "ball.h"
-#include "paddle.h"
+#include "settings.h"
 #include <thread>
-#include "input.h"
+#include <chrono>
 
-Game::Game():canvas(),score(0)
-{
 
+
+Game::Game(){
+    for (int i = 0; i <= BRICKROWS; ++i){
+        for (int j = 0; j < COLS; j += BRICKWIDTH+1){
+            this->blocks.push_front(std::make_unique<Block>(i+ROWOFFSET,j+COLOFFSET));
+        }
+    }
+    sphere = std::make_unique<Sphere>(ROWS-ROWOFFSET*2,(int)COLS/2 + COLOFFSET);
+    paddle = std::make_unique<Paddle>(ROWS-ROWOFFSET,(int)COLS/2 + COLOFFSET);
 }
 
-void Game::startGame()
-{
-    score=0;
 
-    Paddle * paddle = new Paddle(10,10);
-    Ball * ball = new Ball(10,10);
+void Game::startGame(){
+    
+    this->canvas.reset();
+    this->canvas.firstRender(blocks,paddle,sphere);
 
-    paddle->oldY=paddle->y;
-    std::thread inputTh(Input::inputController,paddle);    
-
-    gameObjects.push_front(paddle);
-    gameObjects.push_front(ball);
     
 
-    //canvas.drawField(gameObjects);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    canvas.movePaddle(*paddle,-1);
+    paddle->setCol(paddle->getCol()-1);
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    canvas.movePaddle(*paddle,-1);
+    paddle->setCol(paddle->getCol()-1);
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    canvas.moveSphere(*sphere,1,1);
+    sphere->updatePosition(1,1);
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    canvas.moveSphere(*sphere,1,-1);
+    sphere->updatePosition(1,-1);
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    canvas.moveSphere(*sphere,-1,1);
+    sphere->updatePosition(-1,1);
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    canvas.moveSphere(*sphere,-1,-1);
+    sphere->updatePosition(-1,-1);
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    canvas.moveSphere(*sphere,1,0);
+    sphere->updatePosition(1,0);
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    canvas.moveSphere(*sphere,0,1);
+    sphere->updatePosition(0,1);
 
 
-    //changed.push_front(ball); 
-    changed.push_front(paddle);
-
-    for(;;){
-
-        /*
-        ball -> oldX = ball -> x;
-        ball -> oldY = ball -> y;
-        ball -> x += ball -> xDir;
-        ball -> y += ball -> yDir;
-        */
-
-        canvas.drawFrame(changed);
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    /*
+    while(1){
+        
     }
-
-    inputTh.join();
+    */
 
 }
 
-Game::~Game()
-{
-
+int Game::getScore(){
+    return this->score;
 }
