@@ -8,8 +8,11 @@ class Sphere: public Shape{
 
     public:
         Sphere(int row, int col);
+        int getRowDir();
+        int getColDir();
 
     private:
+        int rowDir,colDir;
 
 };
 

@@ -14,6 +14,7 @@ public:
     Game();
     void startGame();
     int getScore();
+    void inputController();  
 
 private:
 
