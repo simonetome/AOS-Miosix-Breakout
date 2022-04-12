@@ -10,6 +10,8 @@ class Sphere: public Shape{
         Sphere(int row, int col);
         int getRowDir();
         int getColDir();
+        void setRowDir(int newDir);
+        void setColDir(int newDir);
 
     private:
         int rowDir,colDir;
