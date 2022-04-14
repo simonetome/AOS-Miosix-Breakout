@@ -92,7 +92,7 @@ void Canvas::moveSphere(Shape& object, int rowDirection, int colDirection){
 }
 
 
-void Canvas::firstRender(std::list<std::unique_ptr<Block>>& blocks,std::unique_ptr<Paddle>& paddle, std::unique_ptr<Sphere>& sphere){
+void Canvas::firstRender(std::vector<std::unique_ptr<Block>>& blocks,std::unique_ptr<Paddle>& paddle, std::unique_ptr<Sphere>& sphere){
 
     
     this->drawWalls();

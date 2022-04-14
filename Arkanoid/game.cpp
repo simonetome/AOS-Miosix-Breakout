@@ -11,9 +11,13 @@
 Game::Game(){
     for (int i = 0; i <= BRICKROWS; ++i){
         for (int j = 0; j < COLS; j += BRICKWIDTH){
-            this->blocks.push_front(std::make_unique<Block>(i+ROWOFFSET,j+COLOFFSET));
+            //blocks.push_front(std::make_unique<Block>(i+ROWOFFSET,j+COLOFFSET));
+            //Block *b = new Block(i+ROWOFFSET,j+COLOFFSET);
+            //blocks.push_back(b);
+            blocks.push_back(std::make_unique<Block>(i+ROWOFFSET,j+COLOFFSET));
         }
     }
+    
     sphere = std::make_unique<Sphere>(ROWS-ROWOFFSET*2,(int)COLS/2 + COLOFFSET);
     paddle = std::make_unique<Paddle>(ROWS-ROWOFFSET,(int)COLS/2 + COLOFFSET);
 }
@@ -43,7 +47,7 @@ void Game::inputController(){
         //move right
         if(c=='d')
     	{
-    		if(lastC=='d')
+    		if(lastC=='d' && paddle->getCol() + PADDLEWIDTH  < RIGHTWALLCOL)
     		{
                 canvas.movePaddle(*paddle,1);
                 paddle->setCol(paddle->getCol()+1);
@@ -55,7 +59,7 @@ void Game::inputController(){
     		
     	}else if(c=='a') //move left
     	{
-    		if(lastC=='a')
+    		if(lastC=='a' && paddle->getCol() > LEFTWALLCOL +1)
     		{
                 canvas.movePaddle(*paddle,-1);
                 paddle->setCol(paddle->getCol()-1);
@@ -86,9 +90,10 @@ void Game::startGame(){
     int paddledx;
     int blocksx;
     int blockdx;
+    int blockrow;
     
     while(1){
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        std::this_thread::sleep_for(std::chrono::milliseconds(125));
         
         // check for collision 
 
@@ -99,57 +104,60 @@ void Game::startGame(){
         sphereCol = sphere -> getCol();
         paddlesx = paddle -> getCol();
         paddledx = paddlesx + PADDLEWIDTH -1;
+        
+        // check win 
+        // check loss 
 
-        if(sphere->getRowDir() == 1){
+        if(sphereRow == paddle->getRow()+1 ){
+            break;
+        }
+
+        if(blocks.size() == 0){
+            break;
+        }
+        
             
-            if(sphereRow == paddle->getRow() - 1 ){
-                if(sphereCol <= paddledx && sphereCol >= paddlesx && sphereCol <= paddledx - (int)PADDLEWIDTH/2){
-                    sphere -> setColDir(-1);
+        if(sphereRow == paddle->getRow() - 1 && sphere ->getRowDir() == 1 && sphereCol <= paddledx+1 && sphereCol >= paddlesx-1){
+            if(sphereCol <= paddledx - (int)PADDLEWIDTH/2){
+                sphere -> setColDir(-1);
+            }
+            else{
+                sphere -> setColDir(1);
+            }
+            sphere->setRowDir(-1);
+            
+        }
+    
+
+        for (int i = 0; i < blocks.size(); ++i) {
+            
+            blocksx = blocks[i] -> getCol();
+            blockdx = blocksx + BRICKWIDTH - 1;
+            blockrow = blocks[i] -> getRow();
+            
+        
+            // hitting from top or bottom 
+            if(((sphere->getRowDir()==-1 && sphereRow == blockrow+1 ) || (sphere->getRowDir()==1 && sphereRow==blockrow-1)) 
+
+            && (sphereCol >= blocksx-1 && sphereCol <= blockdx+1))
+            {
+                sphere->setRowDir(sphere->getRowDir()*(-1));
+                canvas.deleteObject(*blocks[i]);
+                blocks.erase(blocks.begin()+i);
+            }
+            else
+            {
+                // hitting from sides 
+                if(sphereRow == blockrow && ( (sphereCol == blocksx-1 && sphere->getColDir()==1)
+                                            ||   (sphereCol == blockdx+1 && sphere->getColDir()==-1) ))
+                {
+                    sphere->setColDir(sphere->getColDir()*(-1));
+                    canvas.deleteObject(*blocks[i]);
+                    blocks.erase(blocks.begin()+i);
                 }
-                else{
-                    sphere -> setColDir(1);
-                }
-                sphere->setRowDir(-1);
-                
             }
         }
-        else{
-            for (auto const& b : blocks) {
-                blocksx = b -> getCol();
-                blockdx = blocksx + BRICKWIDTH - 1;
-                
-                //sphere hitting block from the bottom
-                if(sphereRow == b->getRow() + 1 && (sphereCol <= blockdx && sphereCol >= blocksx)){
-                    sphere->setRowDir(+1);
-                    canvas.deleteObject(*b);
-                    blocks.remove(b);
-                }
-                else{
-                    if(sphereRow == b->getRow() && sphere -> getColDir() == -1 && sphereCol <= blockdx + 1 && sphereCol >= blockdx - 1){ // sphere hitting dx of block
-                        sphere -> setColDir(+1);
-                        canvas.deleteObject(*b);
-                        blocks.remove(b);
-                    }
-                    else{
-                        if(sphereRow == b->getRow() && sphere -> getColDir() == 1 && sphereCol >= blocksx - 1 && sphereCol <= blocksx +1){ // sphere hitting sx of block
-                            sphere -> setColDir(-1);
-                            canvas.deleteObject(*b);
-                            blocks.remove(b);
-                        }
-                        else{
-                            if(sphereRow == b->getRow() -1 && (sphereCol <= blockdx && sphereCol >= blocksx)){ // sphere hitting block from the top
-                                sphere->setRowDir(-1);
-                                canvas.deleteObject(*b);
-                                blocks.remove(b);
-                            }
-
-                        }
-                    }
-
-                }
-
-            }
-        }
+        
 
         /*
         #define LEFTWALLCOL 3//= COLOFFSET-2

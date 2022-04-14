@@ -26,7 +26,8 @@
 #define BRICK "\u25A9"
 #define FULLBLOCK "\u2588"
 
-#define SPHERE "\u25c9"
+//#define SPHERE "\033[0;31m\u25c9\033[0m"
+#define SPHERE "\033[0;31m\u2588\033[0m"
 
 #define BALL "\u2b24"
 

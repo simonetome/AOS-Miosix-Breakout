@@ -6,6 +6,7 @@
 #include "paddle.h"
 #include "sphere.h"
 #include <list>
+#include <vector>
 #include <memory>
 
 class Game{
@@ -18,7 +19,7 @@ public:
 
 private:
 
-    std::list<std::unique_ptr<Block>> blocks;
+    std::vector<std::unique_ptr<Block>> blocks;
     std::unique_ptr<Paddle> paddle;
     std::unique_ptr<Sphere> sphere;
     
