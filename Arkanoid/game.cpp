@@ -8,7 +8,11 @@
 #include "canvas.h"
 #include <termios.h>
 
+//variabile condivisa dai due thread 
+bool gameNotEnd;
+
 Game::Game(){
+    gameNotEnd=true;
     for (int i = 0; i <= BRICKROWS; ++i){
         for (int j = 0; j < COLS; j += BRICKWIDTH){
             //blocks.push_front(std::make_unique<Block>(i+ROWOFFSET,j+COLOFFSET));
@@ -30,7 +34,7 @@ void Game::inputController(){
     
 	printf("\x1b[999;999H");     //cursor to the last cell of the terminal
     fflush(stdout);
-    for(;;)
+    while(gameNotEnd)
     {
 	//set option to take in input only one character
     	tcgetattr(STDIN_FILENO,&t);
@@ -63,6 +67,32 @@ void Game::inputController(){
     		{
                 canvas.movePaddle(*paddle,-1);
                 paddle->setCol(paddle->getCol()-1);
+    		}
+		    fflush(stdout);
+		    printf("\x1b[999;999H");
+	    	fflush(stdout);
+	    	lastC=c;
+    		
+    	}else if(c=='w') //move up
+    	{
+    		if(lastC=='w' && paddle->getRow() > PADDLELIMITUP && paddle->getRow() > sphere->getRow()+1)
+    		{
+                canvas.deleteObject(*paddle);
+                paddle->setRow(paddle->getRow()-1);
+                canvas.drawObject(*paddle);
+    		}
+		    fflush(stdout);
+		    printf("\x1b[999;999H");
+	    	fflush(stdout);
+	    	lastC=c;
+    		
+    	}else if(c=='s') //move down
+    	{
+    		if(lastC=='s' && paddle->getRow() < PADDLELIMITBOTTOM)
+    		{
+                canvas.deleteObject(*paddle);
+                paddle->setRow(paddle->getRow()+1);
+                canvas.drawObject(*paddle);
     		}
 		    fflush(stdout);
 		    printf("\x1b[999;999H");
@@ -109,10 +139,12 @@ void Game::startGame(){
         // check loss 
 
         if(sphereRow == paddle->getRow()+1 ){
+            canvas.gameOver();
             break;
         }
 
         if(blocks.size() == 0){
+            canvas.win();
             break;
         }
         
@@ -192,6 +224,7 @@ void Game::startGame(){
 
     }
     
+    gameNotEnd=false;
     inputThread.join();
 
 }

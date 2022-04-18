@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 
+std::vector<std::string> color={RED,YELLOW,BLUE,GREEN,MAGENTA,CYAN,WHITE};
+
 void Canvas::reset(){
     std::printf("\e[1;1H\e[2J\n");
     fflush(stdout);
@@ -97,15 +99,104 @@ void Canvas::firstRender(std::vector<std::unique_ptr<Block>>& blocks,std::unique
     
     this->drawWalls();
     
-
+    int temp=0;
+    int row=0;
+    this->changeColor(color.at(row));
     for (auto const& b : blocks) {
+                
         this->drawObject(*b);
+        temp+=BRICKWIDTH;
+
+        if (temp==COLS)
+        {
+            row++;
+            this->changeColor(color.at(row));
+            temp=0;
+        }
+
     }
 
+    this->changeColor(RESET_COLOR);
     this->drawObject(*paddle);
     this->drawObject(*sphere);
 
     printf("\x1b[999;999H");
     fflush(stdout); 
     
+}
+
+void Canvas::gameOver(){
+
+    /*char endGame[] ="     ▄██████▄     ▄████████   ▄▄▄▄███▄▄▄▄      ▄████████ \x1b[2;1H"     
+                    "    ███    ███   ███    ███ ▄██▀▀▀███▀▀▀██▄   ███    ███ \x1b[3;1H"
+                    "    ███    █▀    ███    ███ ███   ███   ███   ███    █▀  \x1b[4;1H"     
+                    "   ▄███          ███    ███ ███   ███   ███  ▄███▄▄▄     \x1b[5;1H"     
+                    "  ▀▀███ ████▄  ▀███████████ ███   ███   ███ ▀▀███▀▀▀     \x1b[6;1H"     
+                    "    ███    ███   ███    ███ ███   ███   ███   ███    █▄  \x1b[7;1H"     
+                    "    ███    ███   ███    ███ ███   ███   ███   ███    ███ \x1b[8;1H"     
+                    "    ████████▀    ███    █▀   ▀█   ███   █▀    ██████████ \x1b[9;1H"    
+                    "\x1b[10;1H"                                                            
+                    "▄██████▄   ▄█    █▄     ▄████████    ▄████████        \x1b[11;1H"      
+                    "███    ███ ███    ███   ███    ███   ███    ███       \x1b[12;1H"      
+                    "███    ███ ███    ███   ███    █▀    ███    ███       \x1b[13;1H"      
+                    "███    ███ ███    ███  ▄███▄▄▄      ▄███▄▄▄▄██▀       \x1b[14;1H"      
+                    "███    ███ ███    ███ ▀▀███▀▀▀     ▀▀███▀▀▀▀▀         \x1b[15;1H"      
+                    "███    ███ ███    ███   ███    █▄  ▀███████████       \x1b[16;1H"      
+                    "███    ███ ███    ███   ███    ███   ███    ███       \x1b[17;1H"      
+                    "▀██████▀   ▀██████▀    ██████████   ███    ███        \x1b[18;1H"     
+                    "                                    ███    ███        \x1b[19;1H";    */   
+
+    char endGame[] =    " _____ _____ _____ _____    _____ _____ _____ _____ \x1b[2;1H"
+                        "|   __|  _  |     |   __|  |     |  |  |   __| __  |\x1b[3;1H"
+                        "|  |  |     | | | |   __|  |  |  |  |  |   __|    -|\x1b[4;1H"
+                        "|_____|__|__|_|_|_|_____|  |_____|____/|_____|__|__|\x1b[5;1H";
+
+
+    
+                                                               
+                                                              
+    this->reset();
+
+    printf("\x1b[1;1H");
+    printf("%s",endGame);
+    fflush(stdout);
+
+}
+
+void Canvas::win(){
+
+    /*char endGame[] ="  ▄██   ▄    ▄██████▄  ███    █▄       \x1b[2;1H"
+                    "  ███   ██▄ ███    ███ ███    ███      \x1b[3;1H"
+                    "  ███▄▄▄███ ███    ███ ███    ███      \x1b[4;1H"
+                    "  ▀▀▀▀▀▀███ ███    ███ ███    ███      \x1b[5;1H"
+                    "  ▄██   ███ ███    ███ ███    ███      \x1b[6;1H"
+                    "  ███   ███ ███    ███ ███    ███      \x1b[7;1H"
+                    "  ███   ███ ███    ███ ███    ███      \x1b[8;1H"
+                    "   ▀█████▀   ▀██████▀  ████████▀       \x1b[9;1H"
+                    "\x1b[10;1H"                                       
+                    "             ▄█     █▄   ▄█  ███▄▄▄▄   \x1b[11;1H"
+                    "            ███     ███ ███  ███▀▀▀██▄ \x1b[12;1H"
+                    "            ███     ███ ███▌ ███   ███ \x1b[13;1H"
+                    "            ███     ███ ███▌ ███   ███ \x1b[14;1H"
+                    "            ███     ███ ███▌ ███   ███ \x1b[15;1H"
+                    "            ███     ███ ███  ███   ███ \x1b[16;1H"
+                    "            ███ ▄█▄ ███ ███  ███   ███ \x1b[17;1H"
+                    "             ▀███▀███▀  █▀    ▀█   █▀  \x1b[18;1H";*/
+
+    char endGame[]= " __ __ _____ _____    _ _ _ _ _____ \x1b[2;1H"
+                    "|  |  |     |  |  |  | | | |_|   | | \x1b[3;1H"
+                    "|_   _|  |  |  |  |  | | | | | | | | \x1b[2;1H"
+                    "  |_| |_____|_____|  |_____|_|_|___| \x1b[2;1H";
+    this->reset();
+
+    printf("\x1b[1;1H");
+    printf("%s",endGame);
+    fflush(stdout);                                 
+
+}
+
+void Canvas::changeColor(std::string i){
+
+    std::cout<<i;
+    fflush(stdout);
 }

@@ -18,8 +18,11 @@ class Canvas{
         void movePaddle(Shape& object, int rowDirection);
         void moveSphere(Shape& object, int rowDirection, int colDirection);
         void firstRender(std::vector<std::unique_ptr<Block>>& blocks,std::unique_ptr<Paddle>& paddle, std::unique_ptr<Sphere>& sphere);
+        void gameOver();
+        void win();
+        void changeColor(std::string i);
     private:
-
+        
 };
 
 
