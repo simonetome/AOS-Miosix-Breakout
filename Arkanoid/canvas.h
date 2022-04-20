@@ -13,14 +13,13 @@ class Canvas{
     public:
         void reset();
         void drawWalls();
-        void drawObject(Shape& object);  
-        void deleteObject(Shape& object);
-        void movePaddle(Shape& object, int rowDirection);
-        void moveSphere(Shape& object, int rowDirection, int colDirection);
-        void firstRender(std::vector<std::unique_ptr<Block>>& blocks,std::unique_ptr<Paddle>& paddle, std::unique_ptr<Sphere>& sphere);
-        void gameOver();
-        void win();
-        void changeColor(std::string i);
+        void drawObject(const Shape& object);  
+        void deleteObject(const Shape& object);
+        void movePaddle(const Shape& object,const int& rowDirection);
+        void moveSphere(const Shape& object,const int& rowDirection,const int& colDirection);
+        void firstRender(const std::vector<std::unique_ptr<Block>>& blocks,const std::unique_ptr<Paddle>& paddle,const std::unique_ptr<Sphere>& sphere);
+        void write(const std::string& towrite);
+        void changeColor(const std::string& color);
     private:
         
 };

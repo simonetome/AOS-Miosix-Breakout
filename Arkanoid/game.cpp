@@ -7,9 +7,14 @@
 #include "paddle.h"
 #include "canvas.h"
 #include <termios.h>
+#include <mutex>
 
 //variabile condivisa dai due thread 
 bool gameNotEnd;
+
+// sync mutexes
+
+std::mutex paddle_mutex;
 
 Game::Game(){
     gameNotEnd=true;
@@ -54,7 +59,10 @@ void Game::inputController(){
     		if(lastC=='d' && paddle->getCol() + PADDLEWIDTH  < RIGHTWALLCOL)
     		{
                 canvas.movePaddle(*paddle,1);
+
+                paddle_mutex.lock();
                 paddle->setCol(paddle->getCol()+1);
+                paddle_mutex.unlock();
     		}
 		    fflush(stdout);
 		    printf("\x1b[999;999H");
@@ -132,19 +140,21 @@ void Game::startGame(){
 
         sphereRow = sphere -> getRow();
         sphereCol = sphere -> getCol();
+        paddle_mutex.lock();
         paddlesx = paddle -> getCol();
+        paddle_mutex.unlock();
         paddledx = paddlesx + PADDLEWIDTH -1;
         
         // check win 
         // check loss 
 
         if(sphereRow == paddle->getRow()+1 ){
-            canvas.gameOver();
+            canvas.write(GAMEOVER);
             break;
         }
 
         if(blocks.size() == 0){
-            canvas.win();
+            canvas.write(WIN);
             break;
         }
         
@@ -190,15 +200,6 @@ void Game::startGame(){
             }
         }
         
-
-        /*
-        #define LEFTWALLCOL 3//= COLOFFSET-2
-        #define RIGHTWALLCOL 26//= COLOFFSET+COLS+1
-        #define TOPWALLROW 4//= ROWOFFSET-1
-        #define VERTWALLLENGTH 30
-        #define HORWALLLENGTH 20
-        */
-        // check collision with walls 
 
         if(sphere -> getColDir() == 1){ //right wall 
             if(sphereCol == RIGHTWALLCOL - 1 && (sphereRow >= TOPWALLROW + 1 && sphereRow <= TOPWALLROW + 1 +VERTWALLLENGTH)){

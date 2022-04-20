@@ -11,7 +11,7 @@ Sphere::Sphere(int row, int col){
 }
 
 
-int Sphere::getColDir(){ return colDir; }
-int Sphere::getRowDir(){ return rowDir; }
+int Sphere::getColDir() const{ return colDir; }
+int Sphere::getRowDir() const{ return rowDir; }
 void Sphere::setColDir(int newDir){ colDir = newDir; }
 void Sphere::setRowDir(int newDir){ rowDir = newDir; }

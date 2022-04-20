@@ -8,8 +8,8 @@ class Sphere: public Shape{
 
     public:
         Sphere(int row, int col);
-        int getRowDir();
-        int getColDir();
+        int getRowDir() const;
+        int getColDir() const;
         void setRowDir(int newDir);
         void setColDir(int newDir);
 
