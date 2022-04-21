@@ -8,16 +8,17 @@
 #include "canvas.h"
 #include <termios.h>
 #include <mutex>
+#include <atomic>
 
 //variabile condivisa dai due thread 
-bool gameNotEnd;
+std::atomic<bool> gameNotEnd;
 
 // sync mutexes
 
 std::mutex paddle_mutex;
 
 Game::Game(){
-    gameNotEnd=true;
+    gameNotEnd.store(true);
     for (int i = 0; i <= BRICKROWS; ++i){
         for (int j = 0; j < COLS; j += BRICKWIDTH){
             //blocks.push_front(std::make_unique<Block>(i+ROWOFFSET,j+COLOFFSET));
@@ -39,7 +40,7 @@ void Game::inputController(){
     
 	printf("\x1b[999;999H");     //cursor to the last cell of the terminal
     fflush(stdout);
-    while(gameNotEnd)
+    while(gameNotEnd.load() == true)
     {
 	//set option to take in input only one character
     	tcgetattr(STDIN_FILENO,&t);
@@ -75,32 +76,6 @@ void Game::inputController(){
     		{
                 canvas.movePaddle(*paddle,-1);
                 paddle->setCol(paddle->getCol()-1);
-    		}
-		    fflush(stdout);
-		    printf("\x1b[999;999H");
-	    	fflush(stdout);
-	    	lastC=c;
-    		
-    	}else if(c=='w') //move up
-    	{
-    		if(lastC=='w' && paddle->getRow() > PADDLELIMITUP && paddle->getRow() > sphere->getRow()+1)
-    		{
-                canvas.deleteObject(*paddle);
-                paddle->setRow(paddle->getRow()-1);
-                canvas.drawObject(*paddle);
-    		}
-		    fflush(stdout);
-		    printf("\x1b[999;999H");
-	    	fflush(stdout);
-	    	lastC=c;
-    		
-    	}else if(c=='s') //move down
-    	{
-    		if(lastC=='s' && paddle->getRow() < PADDLELIMITBOTTOM)
-    		{
-                canvas.deleteObject(*paddle);
-                paddle->setRow(paddle->getRow()+1);
-                canvas.drawObject(*paddle);
     		}
 		    fflush(stdout);
 		    printf("\x1b[999;999H");
@@ -225,7 +200,7 @@ void Game::startGame(){
 
     }
     
-    gameNotEnd=false;
+    gameNotEnd.store(false);
     inputThread.join();
 
 }
