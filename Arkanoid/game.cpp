@@ -7,15 +7,12 @@
 #include "paddle.h"
 #include "canvas.h"
 #include <termios.h>
-#include <mutex>
 #include <atomic>
+#include "sync.h"
 
 //variabile condivisa dai due thread 
 std::atomic<bool> gameNotEnd;
 
-// sync mutexes
-
-std::mutex paddle_mutex;
 
 Game::Game(){
     gameNotEnd.store(true);
