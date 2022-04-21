@@ -7,11 +7,17 @@
 #include "paddle.h"
 #include "canvas.h"
 #include <termios.h>
+#include <mutex>
 #include <atomic>
-#include "sync.h"
 
 //variabile condivisa dai due thread 
+
+
+// boolean var for ending the game 
 std::atomic<bool> gameNotEnd;
+
+// sync mutexes
+std::mutex paddle_mutex;
 
 
 Game::Game(){
@@ -37,6 +43,7 @@ void Game::inputController(){
     
 	printf("\x1b[999;999H");     //cursor to the last cell of the terminal
     fflush(stdout);
+    
     while(gameNotEnd.load() == true)
     {
 	//set option to take in input only one character
@@ -56,13 +63,12 @@ void Game::inputController(){
     	{
     		if(lastC=='d' && paddle->getCol() + PADDLEWIDTH  < RIGHTWALLCOL)
     		{
-                canvas.movePaddle(*paddle,1);
-
                 paddle_mutex.lock();
+                canvas.movePaddle(*paddle,1);
                 paddle->setCol(paddle->getCol()+1);
                 paddle_mutex.unlock();
     		}
-		    fflush(stdout);
+		    
 		    printf("\x1b[999;999H");
 	    	fflush(stdout);
 	    	lastC=c;
@@ -71,10 +77,12 @@ void Game::inputController(){
     	{
     		if(lastC=='a' && paddle->getCol() > LEFTWALLCOL +1)
     		{
+                paddle_mutex.lock();
                 canvas.movePaddle(*paddle,-1);
                 paddle->setCol(paddle->getCol()-1);
+                paddle_mutex.unlock();
     		}
-		    fflush(stdout);
+		
 		    printf("\x1b[999;999H");
 	    	fflush(stdout);
 	    	lastC=c;
@@ -121,11 +129,13 @@ void Game::startGame(){
         // check loss 
 
         if(sphereRow == paddle->getRow()+1 ){
+            gameNotEnd.store(false);
             canvas.write(GAMEOVER);
             break;
         }
 
         if(blocks.size() == 0){
+            gameNotEnd.store(false);
             canvas.write(WIN);
             break;
         }

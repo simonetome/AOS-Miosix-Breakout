@@ -2,8 +2,13 @@
 #include "settings.h"
 #include <iostream>
 #include <string>
+#include <mutex>
 
 std::vector<std::string> color={RED,YELLOW,BLUE,GREEN,MAGENTA,CYAN,WHITE};
+
+std::mutex stdout_mutex;
+
+using namespace std;
 
 void Canvas::reset(){
     std::printf("\e[1;1H\e[2J\n");
@@ -11,18 +16,10 @@ void Canvas::reset(){
 }
 
 void Canvas::drawWalls(){
-    // blocks starts from rowoffset and coloffset, thus walls must start from it -1 
-
-
-    //LEFTWALLCOL = COLOFFSET-2
-    //RIGHTWALLCOL = COLOFFSET+COLS+1
-    //TOPWALLROW = ROWOFFSET-1
-
 
     //vertical walls
     for(int i = TOPWALLROW; i <= TOPWALLROW+VERTWALLLENGTH; ++i){
         std::printf("\x1b[%d;%dH%s",i,LEFTWALLCOL,FULLBLOCK);
-        fflush(stdout);
         std::printf("\x1b[%d;%dH%s",i,RIGHTWALLCOL,FULLBLOCK);
         fflush(stdout);
     }
@@ -53,41 +50,41 @@ void Canvas::deleteObject(const Shape& object){
     int width = object.getWidth();
     int row = object.getRow();
     int col = object.getCol();
+    std::lock_guard<mutex> lck(stdout_mutex);
 
     for(int i = 0; i < width; ++i){
         std::printf("\x1b[%d;%dH%s",row,i+col," ");
-        fflush(stdout);
     }
+    fflush(stdout);
 }
 
 void Canvas::movePaddle(const Shape& object,const int& rowDirection){
+    
     int row = object.getRow();
     int col = object.getCol();
+    std::lock_guard<mutex> lck(stdout_mutex);
     
     if(rowDirection == 1){ // move right
         std::printf("\x1b[%d;%dH%s",row,col," ");
-        fflush(stdout);
         std::printf("\x1b[%d;%dH%s",row,col+PADDLEWIDTH,FULLBLOCK);
-        fflush(stdout);
         printf("\x1b[999;999H");
         fflush(stdout); 
     }
     else{ // move left
         printf("\x1b[%d;%dH%s",row,col-1,FULLBLOCK);
-        fflush(stdout);
         printf("\x1b[%d;%dH%s",row,col+PADDLEWIDTH-1," ");
-        fflush(stdout);
         printf("\x1b[999;999H");
         fflush(stdout); 
     }
 }
 void Canvas::moveSphere(const Shape& object,const int& rowDirection,const int& colDirection){
+    
     int row = object.getRow();
     int col = object.getCol();
+    std::lock_guard<mutex> lck(stdout_mutex);
+
     std::printf("\x1b[%d;%dH%s",row,col," ");
-    fflush(stdout);
     std::printf("\x1b[%d;%dH%s",row+rowDirection,col+colDirection,SPHERE);
-    fflush(stdout);
     printf("\x1b[999;999H");
     fflush(stdout);
 
@@ -96,7 +93,6 @@ void Canvas::moveSphere(const Shape& object,const int& rowDirection,const int& c
 
 void Canvas::firstRender(const std::vector<std::unique_ptr<Block>>& blocks,const std::unique_ptr<Paddle>& paddle,const std::unique_ptr<Sphere>& sphere){
 
-    
     this->drawWalls();
     
     int temp=0;
@@ -128,9 +124,9 @@ void Canvas::firstRender(const std::vector<std::unique_ptr<Block>>& blocks,const
 
 void Canvas::write(const std::string& towrite){
     this->reset();
-    
     printf("\x1b[1;1H");
     printf("%s",towrite.c_str());
+    printf("\x1b[999;999H");
     fflush(stdout);
 }
 
