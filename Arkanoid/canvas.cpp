@@ -3,10 +3,16 @@
 #include <iostream>
 #include <string>
 #include <mutex>
+#include <termios.h>
+#include <cstdio>
+#include <string.h>
+#include <unistd.h>
 
 std::vector<std::string> color={RED,YELLOW,BLUE,GREEN,MAGENTA,CYAN,WHITE};
 
 std::mutex stdout_mutex;
+
+struct termios t;
 
 using namespace std;
 
@@ -91,7 +97,7 @@ void Canvas::moveSphere(const Shape& object,const int& rowDirection,const int& c
 }
 
 
-void Canvas::firstRender(const std::vector<std::unique_ptr<Block>>& blocks,const std::unique_ptr<Paddle>& paddle,const std::unique_ptr<Sphere>& sphere){
+void Canvas::firstRender(const std::vector<std::unique_ptr<Block>>& blocks,const std::unique_ptr<Paddle>& paddle,const std::unique_ptr<Sphere>& sphere,const std::vector<std::unique_ptr<Obstacle>>& obstacles){
 
     this->drawWalls();
     
@@ -111,8 +117,13 @@ void Canvas::firstRender(const std::vector<std::unique_ptr<Block>>& blocks,const
         }
 
     }
-
     this->changeColor(RESET_COLOR);
+
+    for (auto const& o : obstacles) {
+                
+        this->drawObject(*o);
+    }
+
     this->drawObject(*paddle);
     this->drawObject(*sphere);
 
@@ -126,8 +137,30 @@ void Canvas::write(const std::string& towrite){
     this->reset();
     printf("\x1b[1;1H");
     printf("%s",towrite.c_str());
+    printf("\x1b[15;1H press E to continue");
     printf("\x1b[999;999H");
     fflush(stdout);
+    char c = ' ';
+
+    
+
+    do{
+        tcgetattr(STDIN_FILENO,&t);
+        t.c_lflag &= ~ECHO;
+        t.c_lflag &= ~(ICANON);
+        tcsetattr(STDIN_FILENO,TCSANOW,&t);
+
+        c=getchar();
+
+        tcgetattr(STDIN_FILENO,&t);
+        t.c_lflag |= ECHO;
+        t.c_lflag |= (ICANON);
+        tcsetattr(STDIN_FILENO,TCSANOW,&t);
+        fflush(stdout);
+
+    }while(c != 'e');
+
+    
 }
 
 

@@ -9,6 +9,7 @@
 #include <termios.h>
 #include <mutex>
 #include <atomic>
+#include <random> 
 
 //variabile condivisa dai due thread 
 
@@ -19,10 +20,41 @@ std::atomic<bool> gameNotEnd;
 // sync mutexes
 std::mutex paddle_mutex;
 
+std::random_device rd; 
+std::mt19937 gen(rd());
+std::uniform_int_distribution<> distr_row(OBSTACLES_BOTTOM_LIMIT,OBSTACLES_TOP_LIMIT); 
+std::uniform_int_distribution<> distr_col(OBSTACLES_SX_LIMIT,OBSTACLES_DX_LIMIT); 
 
 Game::Game(int dif){
 
     this->difficulty = dif;
+
+    int row,col;
+
+    switch (this -> difficulty)
+    {
+    case EASY:
+        this -> obstacles_present = false;
+        break;
+    case MEDIUM:
+        for(int i = 0; i < NUM_OBSTACLES_MEDIUM; ++i){
+            row = distr_row(gen);
+            col = distr_col(gen);
+            obstacles.push_back(std::make_unique<Obstacle>(row,col));
+        }
+        this -> obstacles_present = true;
+        break;
+    case HARD:
+        for(int i = 0; i < NUM_OBSTACLES_HARD; ++i){
+            row = distr_row(gen);
+            col = distr_col(gen);
+            obstacles.push_back(std::make_unique<Obstacle>(row,col));
+        }
+        this -> obstacles_present = true;
+        break;
+    default:
+        break;
+    }
 
     gameNotEnd.store(true);
     for (int i = 0; i <= BRICKROWS; ++i){
@@ -35,7 +67,7 @@ Game::Game(int dif){
     }
     
     sphere = std::make_unique<Sphere>(ROWS-ROWOFFSET*2,(int)COLS/2 + COLOFFSET);
-    paddle = std::make_unique<Paddle>(ROWS-ROWOFFSET,(int)COLS/2 + COLOFFSET);
+    paddle = std::make_unique<Paddle>(PADDLEROW,(int)COLS/2 + COLOFFSET);
 }
 
 
@@ -101,7 +133,7 @@ void Game::inputController(){
 void Game::startGame(){
     
     this->canvas.reset();
-    this->canvas.firstRender(blocks,paddle,sphere);
+    this->canvas.firstRender(blocks,paddle,sphere,obstacles);
 
     std::thread inputThread(&Game::inputController,this);    
     
@@ -112,7 +144,12 @@ void Game::startGame(){
     int blocksx;
     int blockdx;
     int blockrow;
-    
+    int obstaclesx;
+    int obstacledx;
+    int obstaclerow;
+
+    bool won = false;
+
     while(1){
         switch (this->difficulty)
         {
@@ -147,14 +184,14 @@ void Game::startGame(){
         // check loss 
 
         if(sphereRow == paddle->getRow()+1 ){
+            won = false;
             gameNotEnd.store(false);
-            canvas.write(GAMEOVER);
             break;
         }
 
         if(blocks.size() == 0){
+            won = true;
             gameNotEnd.store(false);
-            canvas.write(WIN);
             break;
         }
         
@@ -199,6 +236,33 @@ void Game::startGame(){
                 }
             }
         }
+
+        if(obstacles_present){
+            for (int i = 0; i < obstacles.size(); ++i) {
+            
+                obstaclesx = obstacles[i] -> getCol();
+                obstacledx = obstaclesx + OBSTACLEWIDTH - 1;
+                obstaclerow = obstacles[i] -> getRow();
+                
+            
+                // hitting from top or bottom 
+                if(((sphere->getRowDir()==-1 && sphereRow == obstaclerow+1 ) || (sphere->getRowDir()==1 && sphereRow==obstaclerow-1)) 
+
+                && (sphereCol >= obstaclesx-1 && sphereCol <= obstacledx+1))
+                {
+                    sphere->setRowDir(sphere->getRowDir()*(-1));
+                }
+                else
+                {
+                    // hitting from sides 
+                    if(sphereRow == obstaclerow && ( (sphereCol == obstaclesx-1 && sphere->getColDir()==1)
+                                                ||   (sphereCol == obstacledx+1 && sphere->getColDir()==-1) ))
+                    {
+                        sphere->setColDir(sphere->getColDir()*(-1));
+                    }
+                }
+            }
+        }
         
 
         if(sphere -> getColDir() == 1){ //right wall 
@@ -227,6 +291,12 @@ void Game::startGame(){
     
     gameNotEnd.store(false);
     inputThread.join();
+
+    if(won){
+        canvas.write(WIN);
+    }else{
+        canvas.write(GAMEOVER);
+    }
 
 }
 

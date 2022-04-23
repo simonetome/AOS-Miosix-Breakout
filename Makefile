@@ -26,6 +26,7 @@ Arkanoid/block.cpp \
 Arkanoid/paddle.cpp \
 Arkanoid/sphere.cpp \
 Arkanoid/shape.cpp \
+Arkanoid/obstacle.cpp \
 
 ##
 ## List here additional static libraries with relative path

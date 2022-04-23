@@ -5,6 +5,7 @@
 #include "block.h"
 #include "paddle.h"
 #include "sphere.h"
+#include "obstacle.h"
 #include <list>
 #include <vector>
 #include <memory>
@@ -20,10 +21,13 @@ public:
 private:
 
     std::vector<std::unique_ptr<Block>> blocks;
+    std::vector<std::unique_ptr<Obstacle>> obstacles;
     std::unique_ptr<Paddle> paddle;
     std::unique_ptr<Sphere> sphere;
 
     int difficulty;
+
+    bool obstacles_present;
     
     Canvas canvas;
     int score;
