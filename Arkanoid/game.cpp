@@ -20,7 +20,10 @@ std::atomic<bool> gameNotEnd;
 std::mutex paddle_mutex;
 
 
-Game::Game(){
+Game::Game(int dif){
+
+    this->difficulty = dif;
+
     gameNotEnd.store(true);
     for (int i = 0; i <= BRICKROWS; ++i){
         for (int j = 0; j < COLS; j += BRICKWIDTH){
@@ -111,7 +114,22 @@ void Game::startGame(){
     int blockrow;
     
     while(1){
-        std::this_thread::sleep_for(std::chrono::milliseconds(125));
+        switch (this->difficulty)
+        {
+        case EASY:
+            std::this_thread::sleep_for(std::chrono::milliseconds(EASY_SPEED));
+            break;
+        case MEDIUM:
+            std::this_thread::sleep_for(std::chrono::milliseconds(MEDIUM_SPEED));
+            break;
+        case HARD:
+            std::this_thread::sleep_for(std::chrono::milliseconds(HARD_SPEED));
+            break;
+        
+        default:
+            break;
+        }
+        
         
         // check for collision 
 

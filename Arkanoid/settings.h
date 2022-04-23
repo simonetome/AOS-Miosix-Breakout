@@ -8,7 +8,7 @@
 #define ROWOFFSET 5
 
 #define BRICKWIDTH 6
-#define BRICKROWS 4
+#define BRICKROWS 8
 
 
 #define LEFTWALLCOL 3//= COLOFFSET-2
@@ -51,5 +51,20 @@
 //#define SPHERE "\033[0;31m\u2588\033[0m"
 
 #define BALL "\u2b24"
+
+
+
+#define EASY 0
+#define MEDIUM 1
+#define HARD 2
+#define QUIT 3
+
+#define EASY_SPEED 200
+#define MEDIUM_SPEED 125
+#define HARD_SPEED 70
+
+
+
+
 
 #endif

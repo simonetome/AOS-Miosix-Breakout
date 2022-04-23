@@ -54,8 +54,8 @@ void Canvas::deleteObject(const Shape& object){
 
     for(int i = 0; i < width; ++i){
         std::printf("\x1b[%d;%dH%s",row,i+col," ");
+        fflush(stdout);
     }
-    fflush(stdout);
 }
 
 void Canvas::movePaddle(const Shape& object,const int& rowDirection){
@@ -97,7 +97,7 @@ void Canvas::firstRender(const std::vector<std::unique_ptr<Block>>& blocks,const
     
     int temp=0;
     int row=0;
-    this->changeColor(color.at(row));
+    this->changeColor(color[row%color.size()]);
     for (auto const& b : blocks) {
                 
         this->drawObject(*b);
@@ -106,7 +106,7 @@ void Canvas::firstRender(const std::vector<std::unique_ptr<Block>>& blocks,const
         if (temp==COLS)
         {
             row++;
-            this->changeColor(color.at(row));
+            this->changeColor(color[row%color.size()]);
             temp=0;
         }
 

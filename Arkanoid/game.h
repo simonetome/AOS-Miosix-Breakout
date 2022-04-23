@@ -12,7 +12,7 @@
 class Game{
 
 public:
-    Game();
+    Game(int dif);
     void startGame();
     int getScore();
     void inputController();  
@@ -22,6 +22,8 @@ private:
     std::vector<std::unique_ptr<Block>> blocks;
     std::unique_ptr<Paddle> paddle;
     std::unique_ptr<Sphere> sphere;
+
+    int difficulty;
     
     Canvas canvas;
     int score;

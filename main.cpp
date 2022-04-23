@@ -4,9 +4,10 @@
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
+#include <algorithm>
 #include "miosix.h"
 #include <thread>
-
+#include "Arkanoid/settings.h"
 #include "Arkanoid/game.h"
 
 
@@ -18,7 +19,10 @@ using namespace miosix;
 
 int main()
 {
-
+	int selected = MEDIUM;
+	bool selecting = true;
+	bool quit = false;
+	
 	/*reset*/
 	std::printf("\e[1;1H\e[2J\n");
     fflush(stdout);
@@ -29,13 +33,16 @@ int main()
 	do{
 
 		char c;		
-		bool startGame =true;
+		
 
 		printf("\e[1;1H\e[2J\n");
     	fflush(stdout);
 
-		printf("\x1b[11;1H Choose the option by pressing A or D, any other key to select");
-		printf("\x1b[13;25H\u001b[32m START	\033[0mQUIT");
+		printf("\x1b[11;1H Choose the option by pressing A or D, E to select");
+		printf("\x1b[13;25H %s %s %s",WHITE,"EASY",RESET_COLOR);
+		printf("\x1b[14;25H %s %s %s",GREEN,"MEDIUM",RESET_COLOR);
+		printf("\x1b[15;25H %s %s %s",WHITE,"HARD",RESET_COLOR);
+		printf("\x1b[16;25H %s %s %s",WHITE,"QUIT",RESET_COLOR);
 		printf("\x1b[999;999H");
 		fflush(stdout);
 
@@ -56,27 +63,75 @@ int main()
 
 			if(c=='d')
 			{
-				startGame=false;
-				printf("\x1b[13;25H\033[0m START	\u001b[32mQUIT \033[0m");
-				printf("\x1b[999;999H");
-				fflush(stdout);	
+				selected = std::min(selected+1,QUIT);
 
 			}else if(c=='a')
 			{
-				startGame=true;
-				printf("\x1b[13;25H\u001b[32m START	\033[0mQUIT");
+				selected = std::max(selected-1,EASY);
+
+			}
+			else if(c=='e')
+			{
+				selecting = false;
+				if(selected == QUIT)
+				{
+					quit = true;
+				}
+			}
+
+			switch (selected)
+			{
+			case EASY:
+				printf("\x1b[11;1H Choose the option by pressing A or D, E to select");
+				printf("\x1b[13;25H %s %s %s",GREEN,"EASY",RESET_COLOR);
+				printf("\x1b[14;25H %s %s %s",WHITE,"MEDIUM",RESET_COLOR);
+				printf("\x1b[15;25H %s %s %s",WHITE,"HARD",RESET_COLOR);
+				printf("\x1b[16;25H %s %s %s",WHITE,"QUIT",RESET_COLOR);
+				printf("\x1b[999;999H");
+				fflush(stdout);
+				break;
+			case MEDIUM:
+				printf("\x1b[11;1H Choose the option by pressing A or D, E to select");
+				printf("\x1b[13;25H %s %s %s",WHITE,"EASY",RESET_COLOR);
+				printf("\x1b[14;25H %s %s %s",GREEN,"MEDIUM",RESET_COLOR);
+				printf("\x1b[15;25H %s %s %s",WHITE,"HARD",RESET_COLOR);
+				printf("\x1b[16;25H %s %s %s",WHITE,"QUIT",RESET_COLOR);
 				printf("\x1b[999;999H");
 				fflush(stdout);	
+				break;
+			case HARD:
+				printf("\x1b[11;1H Choose the option by pressing A or D, E to select");
+				printf("\x1b[13;25H %s %s %s",WHITE,"EASY",RESET_COLOR);
+				printf("\x1b[14;25H %s %s %s",WHITE,"MEDIUM",RESET_COLOR);
+				printf("\x1b[15;25H %s %s %s",GREEN,"HARD",RESET_COLOR);
+				printf("\x1b[16;25H %s %s %s",WHITE,"QUIT",RESET_COLOR);
+				printf("\x1b[999;999H");
+				fflush(stdout);
+				break;
+			case QUIT:
+				printf("\x1b[11;1H Choose the option by pressing A or D, E to select");
+				printf("\x1b[13;25H %s %s %s",WHITE,"EASY",RESET_COLOR);
+				printf("\x1b[14;25H %s %s %s",WHITE,"MEDIUM",RESET_COLOR);
+				printf("\x1b[15;25H %s %s %s",WHITE,"HARD",RESET_COLOR);
+				printf("\x1b[16;25H %s %s %s",GREEN,"QUIT",RESET_COLOR);
+				printf("\x1b[999;999H");
+				fflush(stdout);
+				break;
+			default:
+				break;
+			}
 
-			}else break;
-		}while(true);
 
-		if(!startGame)break;
+		}while(selecting);
 
-		Game game;
-		game.startGame();
-
-	}while(true);
+		if(!quit){
+			Game game(selected);
+			game.startGame();
+			/* game has ended */
+			selecting = true;
+			quit = false;
+		}
+	}while(!quit);
 
 	std::printf("\e[1;1H\e[2J\n");
     fflush(stdout);
