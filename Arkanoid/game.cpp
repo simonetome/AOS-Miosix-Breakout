@@ -59,15 +59,16 @@ Game::Game(int dif){
     gameNotEnd.store(true);
     for (int i = 0; i <= BRICKROWS; ++i){
         for (int j = 0; j < COLS; j += BRICKWIDTH){
-            //blocks.push_front(std::make_unique<Block>(i+ROWOFFSET,j+COLOFFSET));
-            //Block *b = new Block(i+ROWOFFSET,j+COLOFFSET);
-            //blocks.push_back(b);
-            blocks.push_back(std::make_unique<Block>(i+ROWOFFSET,j+COLOFFSET));
+
+            blocks.push_back(std::make_unique<Block>(i+ROWOFFSET,j+COLOFFSET,2,RED));
+
         }
     }
     
     sphere = std::make_unique<Sphere>(ROWS-ROWOFFSET*2,(int)COLS/2 + COLOFFSET);
     paddle = std::make_unique<Paddle>(PADDLEROW,(int)COLS/2 + COLOFFSET);
+    sphere -> setColor(GREEN);
+    paddle -> setColor("");
 }
 
 
@@ -221,8 +222,15 @@ void Game::startGame(){
             && (sphereCol >= blocksx-1 && sphereCol <= blockdx+1))
             {
                 sphere->setRowDir(sphere->getRowDir()*(-1));
-                canvas.deleteObject(*blocks[i]);
-                blocks.erase(blocks.begin()+i);
+                blocks[i] -> hit();
+                if(blocks[i] -> getHp() == 0){
+                    canvas.deleteObject(*blocks[i]);
+                    blocks.erase(blocks.begin()+i);
+                }
+                else{
+                    blocks[i] -> setColor(YELLOW);
+                    canvas.drawObject(*blocks[i]);
+                }
             }
             else
             {
@@ -231,8 +239,15 @@ void Game::startGame(){
                                             ||   (sphereCol == blockdx+1 && sphere->getColDir()==-1) ))
                 {
                     sphere->setColDir(sphere->getColDir()*(-1));
-                    canvas.deleteObject(*blocks[i]);
-                    blocks.erase(blocks.begin()+i);
+                    blocks[i] -> hit();
+                    if(blocks[i] -> getHp() == 0){
+                        canvas.deleteObject(*blocks[i]);
+                        blocks.erase(blocks.begin()+i);
+                    }
+                    else{
+                        blocks[i] -> setColor(YELLOW);
+                        canvas.drawObject(*blocks[i]);
+                    }
                 }
             }
         }

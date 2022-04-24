@@ -7,4 +7,5 @@ Obstacle::Obstacle(int row, int col){
     this -> col = col;
     this->width = OBSTACLEWIDTH;
     this->shapestr = OBSTACLE;
+    this->color = MAGENTA;
 }

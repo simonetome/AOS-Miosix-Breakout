@@ -8,7 +8,6 @@
 #include <string.h>
 #include <unistd.h>
 
-std::vector<std::string> color={RED,YELLOW,BLUE,GREEN,MAGENTA,CYAN,WHITE};
 
 std::mutex stdout_mutex;
 
@@ -45,11 +44,12 @@ void Canvas::drawObject(const Shape& object){
     int row = object.getRow();
     int col = object.getCol();
     std::string shape = object.getShape();
-
+    this->changeColor(object.getColor());
     for(int i = 0; i < width; ++i){
         std::printf("\x1b[%d;%dH%s",row,i+col,shape.c_str());
         fflush(stdout);
     }
+    this->changeColor(RESET_COLOR);
 }
 
 void Canvas::deleteObject(const Shape& object){
@@ -101,26 +101,12 @@ void Canvas::firstRender(const std::vector<std::unique_ptr<Block>>& blocks,const
 
     this->drawWalls();
     
-    int temp=0;
-    int row=0;
-    this->changeColor(color[row%color.size()]);
     for (auto const& b : blocks) {
-                
         this->drawObject(*b);
-        temp+=BRICKWIDTH;
-
-        if (temp==COLS)
-        {
-            row++;
-            this->changeColor(color[row%color.size()]);
-            temp=0;
-        }
-
     }
-    this->changeColor(RESET_COLOR);
+    
 
-    for (auto const& o : obstacles) {
-                
+    for (auto const& o : obstacles) {       
         this->drawObject(*o);
     }
 

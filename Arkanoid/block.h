@@ -7,8 +7,11 @@
 class Block: public Shape{
 
     public:
-        Block(int row, int col);
+        Block(int row, int col, int hp,std::string color);
+        int getHp() const;
+        void hit();
     private:
+        int hp;
 
 };
 

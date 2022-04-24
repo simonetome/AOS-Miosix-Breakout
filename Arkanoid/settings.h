@@ -48,6 +48,18 @@
 #define MAGENTA "\u001b[35m"
 #define CYAN "\u001b[36m"
 #define WHITE "\u001b[37m"
+
+#define BRIGHTRED "\u001b[91m"
+#define BRIGHTGREEN "\u001b[92m"
+#define BRIGHTYELLOW "\u001b[93m"
+#define BRIGHTBLUE "\u001b[94m"
+#define BRIGHTMAGENTA "\u001b[95m"
+#define BRIGHTCYAN "\u001b[96m"
+
+
+
+
+
 #define RESET_COLOR "\033[0m"
 
 
@@ -58,7 +70,7 @@
 
 
 
-#define SPHERE "\033[0;31m\u25c9\033[0m"
+#define SPHERE "\u001b[92m\u25c9\033[0m"
 //#define SPHERE "\033[0;31m\u2588\033[0m"
 
 #define BALL "\u2b24"
@@ -70,9 +82,9 @@
 #define HARD 2
 #define QUIT 3
 
-#define EASY_SPEED 125
-#define MEDIUM_SPEED 100
-#define HARD_SPEED 60
+#define EASY_SPEED 80
+#define MEDIUM_SPEED 65
+#define HARD_SPEED 55
 
 
 
