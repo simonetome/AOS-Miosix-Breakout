@@ -4,18 +4,34 @@
 #define COLS 36
 #define ROWS 40
 
-#define COLOFFSET 5
-#define ROWOFFSET 5
 
-#define BRICKWIDTH 6
-#define BRICKROWS 8
+//terminal size: 70 columns, 45 rows 
+#define ORIZONTAL_SIZE 45
+#define VERTICAL_SIZE 70
+
+//game space
+#define VERTWALLLENGTH 40
+#define HORWALLLENGTH 32
+
+//offset
+#define COLOFFSET ((VERTICAL_SIZE-COLS+2)/2)    
+#define ROWOFFSET ((ORIZONTAL_SIZE-HORWALLLENGTH-2)/2)
+
+//gameOver length:50
+#define GAMEOVEROFFSET ((VERTICAL_SIZE-50)/2)
+//Breakout length:42
+#define BREAKOUTOFFSET ((VERTICAL_SIZE-42)/2)
+//Win length:35
+#define WINOFFSET ((VERTICAL_SIZE-35)/2)
+
+#define BRICKWIDTH 9
+#define BRICKROWS 3
 
 
 #define LEFTWALLCOL COLOFFSET - 2
 #define RIGHTWALLCOL COLOFFSET + COLS + 1
 #define TOPWALLROW ROWOFFSET - 1
-#define VERTWALLLENGTH 40
-#define HORWALLLENGTH 32
+
 
 //define paddle feature
 #define PADDLEWIDTH 12
@@ -63,11 +79,11 @@
 #define RESET_COLOR "\033[0m"
 
 
-#define GAMEOVER    " _____ _____ _____ _____    _____ _____ _____ _____ \x1b[2;1H|   __|  _  |     |   __|  |     |  |  |   __| __  |\x1b[3;1H|  |  |     | | | |   __|  |  |  |  |  |   __|    -|\x1b[4;1H|_____|__|__|_|_|_|_____|  |_____|____/|_____|__|__|\x1b[5;1H"
+#define GAMEOVER   "\x1b[2;%dH _____ _____ _____ _____    _____ _____ _____ _____ \x1b[3;%dH|   __|  _  |     |   __|  |     |  |  |   __| __  |\x1b[4;%dH|  |  |     | | | |   __|  |  |  |  |  |   __|    -|\x1b[5;%dH|_____|__|__|_|_|_|_____|  |_____|____/|_____|__|__|"
         
-#define WIN " __ __ _____ _____    _ _ _ _ _____ \x1b[2;1H|  |  |     |  |  |  | | | |_|   | | \x1b[3;1H|_   _|  |  |  |  |  | | | | | | | | \x1b[2;1H|_| |_____|_____|  |_____|_|_|___| \x1b[2;1H"
+#define WIN "\x1b[2;%dH __ __ _____ _____    _ _ _ _ _____ \x1b[3;%dH|  |  |     |  |  |  | | | |_|   | | \x1b[4;%dH|_   _|  |  |  |  |  | | | | | | | | \x1b[5;%dH|_| |_____|_____|  |_____|_|_|___| "
 
-
+#define BREAKOUT  "\x1b[2;%dH _____ _____ _____ _____ _____ _____ _____ \x1b[3;%dH| __  | __  |   __|  |  |     |  |  |_   _|\x1b[4;%dH| __ -|    -|   __|    -|  |  |  |  | | |\x1b[5;%dH|_____|__|__|_____|__|__|_____|_____| |_|"  
 
 
 #define SPHERE "\u001b[92m\u25c9\033[0m"

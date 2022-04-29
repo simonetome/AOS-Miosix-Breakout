@@ -38,6 +38,7 @@ int main()
 		printf("\e[1;1H\e[2J\n");
     	fflush(stdout);
 
+		printf(BREAKOUT,BREAKOUTOFFSET,BREAKOUTOFFSET,BREAKOUTOFFSET,BREAKOUTOFFSET);
 		printf("\x1b[11;1H Choose the option by pressing A or D, E to select");
 		printf("\x1b[13;25H %s %s %s",WHITE,"EASY",RESET_COLOR);
 		printf("\x1b[14;25H %s %s %s",GREEN,"MEDIUM",RESET_COLOR);
@@ -45,6 +46,7 @@ int main()
 		printf("\x1b[16;25H %s %s %s",WHITE,"QUIT",RESET_COLOR);
 		printf("\x1b[999;999H");
 		fflush(stdout);
+
 
 		do{
 			
@@ -131,6 +133,8 @@ int main()
 			selecting = true;
 			quit = false;
 		}
+
+		selected=MEDIUM;
 	}while(!quit);
 
 	std::printf("\e[1;1H\e[2J\n");

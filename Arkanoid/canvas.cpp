@@ -24,8 +24,11 @@ void Canvas::drawWalls(){
 
     //vertical walls
     for(int i = TOPWALLROW; i <= TOPWALLROW+VERTWALLLENGTH; ++i){
+        std::printf("\x1b[%d;%dH%s",i,LEFTWALLCOL-1,FULLBLOCK);
         std::printf("\x1b[%d;%dH%s",i,LEFTWALLCOL,FULLBLOCK);
+
         std::printf("\x1b[%d;%dH%s",i,RIGHTWALLCOL,FULLBLOCK);
+        std::printf("\x1b[%d;%dH%s",i,RIGHTWALLCOL+1,FULLBLOCK);
         fflush(stdout);
     }
 
@@ -119,10 +122,15 @@ void Canvas::firstRender(const std::vector<std::unique_ptr<Block>>& blocks,const
 }
 
 
-void Canvas::write(const std::string& towrite){
+//void Canvas::write(const std::string& towrite){
+void Canvas::write(bool won){
     this->reset();
     printf("\x1b[1;1H");
-    printf("%s",towrite.c_str());
+    //printf("%s",towrite.c_str());
+    if(won)
+        printf(WIN,WINOFFSET,WINOFFSET,WINOFFSET,WINOFFSET);
+    else
+        printf(GAMEOVER,GAMEOVEROFFSET,GAMEOVEROFFSET,GAMEOVEROFFSET,GAMEOVEROFFSET);
     printf("\x1b[15;1H press E to continue");
     printf("\x1b[999;999H");
     fflush(stdout);

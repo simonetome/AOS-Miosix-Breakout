@@ -25,6 +25,9 @@ std::mt19937 gen(rd());
 std::uniform_int_distribution<> distr_row(OBSTACLES_BOTTOM_LIMIT,OBSTACLES_TOP_LIMIT); 
 std::uniform_int_distribution<> distr_col(OBSTACLES_SX_LIMIT,OBSTACLES_DX_LIMIT); 
 
+//array of color
+std::string color[8]={GREEN,BRIGHTYELLOW,RED,MAGENTA,BLUE,YELLOW,BRIGHTRED,CYAN};
+
 Game::Game(int dif){
 
     this->difficulty = dif;
@@ -57,10 +60,25 @@ Game::Game(int dif){
     }
 
     gameNotEnd.store(true);
-    for (int i = 0; i <= BRICKROWS; ++i){
-        for (int j = 0; j < COLS; j += BRICKWIDTH){
 
-            blocks.push_back(std::make_unique<Block>(i+ROWOFFSET,j+COLOFFSET,2,RED));
+    int difficulty=3;
+    int simpleColor=1;
+
+    for (int i = 0; i <= BRICKROWS; ++i){
+        
+        if((i%int((BRICKROWS+1)/3))==0) difficulty--;
+        if(difficulty<0)difficulty=0;
+        if(i%2==0)simpleColor++;
+
+        for (int j = 0; j < COLS; j += BRICKWIDTH){
+            if(dif==EASY){
+                blocks.push_back(std::make_unique<Block>(i+ROWOFFSET,j+COLOFFSET,1,color[simpleColor%color->length()]));
+                
+                }
+            else
+            //blocks.push_back(std::make_unique<Block>(i+ROWOFFSET,j+COLOFFSET,2,RED));
+                blocks.push_back(std::make_unique<Block>(i+ROWOFFSET,j+COLOFFSET,difficulty+1,color[difficulty]));
+            
 
         }
     }
@@ -228,7 +246,8 @@ void Game::startGame(){
                     blocks.erase(blocks.begin()+i);
                 }
                 else{
-                    blocks[i] -> setColor(YELLOW);
+                    //blocks[i] -> setColor(YELLOW);
+                    blocks[i] -> setColor(color[blocks[i]->getHp()-1]);
                     canvas.drawObject(*blocks[i]);
                 }
             }
@@ -245,7 +264,8 @@ void Game::startGame(){
                         blocks.erase(blocks.begin()+i);
                     }
                     else{
-                        blocks[i] -> setColor(YELLOW);
+                        //blocks[i] -> setColor(YELLOW);
+                        blocks[i] -> setColor(color[blocks[i]->getHp()-1]);
                         canvas.drawObject(*blocks[i]);
                     }
                 }
@@ -307,11 +327,7 @@ void Game::startGame(){
     gameNotEnd.store(false);
     inputThread.join();
 
-    if(won){
-        canvas.write(WIN);
-    }else{
-        canvas.write(GAMEOVER);
-    }
+    canvas.write(won);
 
 }
 

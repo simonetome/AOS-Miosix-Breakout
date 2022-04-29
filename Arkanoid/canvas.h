@@ -20,7 +20,8 @@ class Canvas{
         void moveSphere(const Shape& object,const int& rowDirection,const int& colDirection);
         void firstRender(const std::vector<std::unique_ptr<Block>>& blocks,const std::unique_ptr<Paddle>& paddle,
         const std::unique_ptr<Sphere>& sphere, const std::vector<std::unique_ptr<Obstacle>>& obstacles);
-        void write(const std::string& towrite);
+        //void write(const std::string& towrite);
+        void write(bool won);
         void changeColor(const std::string& color);
     private:
         
