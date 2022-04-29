@@ -19,8 +19,8 @@
 
 //gameOver length:50
 #define GAMEOVEROFFSET ((VERTICAL_SIZE-50)/2)
-//Breakout length:42
-#define BREAKOUTOFFSET ((VERTICAL_SIZE-42)/2)
+//Breakout length:48
+#define BREAKOUTOFFSET ((VERTICAL_SIZE-48)/2)
 //Win length:35
 #define WINOFFSET ((VERTICAL_SIZE-35)/2)
 
@@ -83,7 +83,7 @@
         
 #define WIN "\x1b[12;%dH __ __ _____ _____    _ _ _ _ _____ \x1b[13;%dH|  |  |     |  |  |  | | | |_|   | | \x1b[14;%dH|_   _|  |  |  |  |  | | | | | | | | \x1b[15;%dH|_| |_____|_____|  |_____|_|_|___| "
 
-#define BREAKOUT  "\x1b[12;%dH _____ _____ _____ _____ _____ _____ _____ \x1b[13;%dH| __  | __  |   __|  |  |     |  |  |_   _|\x1b[14;%dH| __ -|    -|   __|    -|  |  |  |  | | |\x1b[15;%dH|_____|__|__|_____|__|__|_____|_____| |_|"  
+#define BREAKOUT  "\x1b[12;%dH _____ _____ _____ _____ _____ _____ _____ _____ \x1b[13;%dH| __  | __  |   __|  _  |  |  |     |  |  |_   _|\x1b[14;%dH| __ -|    -|   __|     |    -|  |  |  |  | | |\x1b[15;%dH|_____|__|__|_____|__|__|__|__|_____|_____| |_|"  
 
 
 #define SPHERE "\u001b[92m\u25c9\033[0m"
