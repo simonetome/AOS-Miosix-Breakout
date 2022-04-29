@@ -11,6 +11,9 @@
 #include <atomic>
 #include <random> 
 
+#include "../miosix/interfaces/gpio.h"
+
+//using namespace miosix;
 //variabile condivisa dai due thread 
 
 
@@ -27,6 +30,8 @@ std::uniform_int_distribution<> distr_col(OBSTACLES_SX_LIMIT,OBSTACLES_DX_LIMIT)
 
 //array of color
 std::string color[8]={GREEN,BRIGHTYELLOW,RED,MAGENTA,BLUE,YELLOW,BRIGHTRED,CYAN};
+    
+    
 
 Game::Game(int dif){
 
@@ -98,10 +103,18 @@ void Game::inputController(){
 	printf("\x1b[999;999H");     //cursor to the last cell of the terminal
     fflush(stdout);
     
+    miosix::GpioPin *move_right = new miosix::GpioPin(GPIOD_BASE,6);
+    miosix::GpioPin *move_left = new miosix::GpioPin(GPIOD_BASE,7);
+
+    move_right ->mode(miosix::Mode::INPUT);
+    move_left ->mode(miosix::Mode::INPUT);
+    
+
     while(gameNotEnd.load() == true)
     {
+    //input using the keyboard
 	//set option to take in input only one character
-    	tcgetattr(STDIN_FILENO,&t);
+    	/*tcgetattr(STDIN_FILENO,&t);
         t.c_lflag &= ~ECHO;
         t.c_lflag &= ~(ICANON);
         tcsetattr(STDIN_FILENO,TCSANOW,&t);
@@ -112,6 +125,7 @@ void Game::inputController(){
         t.c_lflag |= ECHO;
         t.c_lflag |= (ICANON);
         tcsetattr(STDIN_FILENO,TCSANOW,&t);
+
         //move right
         if(c=='d')
     	{
@@ -143,7 +157,43 @@ void Game::inputController(){
     		
     	}
 
-    	c=' ';
+    	c=' ';*/
+
+        //BUTTON input
+        //sleep to read the button value every 40ms
+        std::this_thread::sleep_for(std::chrono::milliseconds(40));
+        //move_right
+        if(move_right->value()==1)
+    	{
+    		if(lastC=='r' && paddle->getCol() + PADDLEWIDTH  < RIGHTWALLCOL)
+    		{
+                paddle_mutex.lock();
+                canvas.movePaddle(*paddle,1);
+                paddle->setCol(paddle->getCol()+1);
+                paddle_mutex.unlock();
+    		}
+		    
+		    printf("\x1b[999;999H");
+	    	fflush(stdout);
+	    	lastC='r';
+    		
+    	}else if(move_left->value()==1) //move left
+    	{
+    		if(lastC=='l' && paddle->getCol() > LEFTWALLCOL +1)
+    		{
+                paddle_mutex.lock();
+                canvas.movePaddle(*paddle,-1);
+                paddle->setCol(paddle->getCol()-1);
+                paddle_mutex.unlock();
+    		}
+		
+		    printf("\x1b[999;999H");
+	    	fflush(stdout);
+	    	lastC='l';
+    		
+    	}
+
+    	
     }
     
 }

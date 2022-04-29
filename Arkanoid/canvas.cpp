@@ -8,6 +8,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "../miosix/interfaces/gpio.h"
 
 std::mutex stdout_mutex;
 
@@ -131,13 +132,23 @@ void Canvas::write(bool won){
         printf(WIN,WINOFFSET,WINOFFSET,WINOFFSET,WINOFFSET);
     else
         printf(GAMEOVER,GAMEOVEROFFSET,GAMEOVEROFFSET,GAMEOVEROFFSET,GAMEOVEROFFSET);
-    printf("\x1b[15;1H press E to continue");
+    printf("\x1b[25;%dH Press ENTER to continue",(VERTICAL_SIZE-24)/2);
     printf("\x1b[999;999H");
     fflush(stdout);
+
+    miosix::GpioPin *select = new miosix::GpioPin(GPIOD_BASE,4);
+	select ->mode(miosix::Mode::INPUT);
+
+    int lastS=0;
+    while(true){
+        int selection=select->value();
+        if(selection==0 && lastS==1)
+            break;
+        lastS=selection;
+    }
+    /*
+    //Keyboard input
     char c = ' ';
-
-    
-
     do{
         tcgetattr(STDIN_FILENO,&t);
         t.c_lflag &= ~ECHO;
@@ -152,7 +163,7 @@ void Canvas::write(bool won){
         tcsetattr(STDIN_FILENO,TCSANOW,&t);
         fflush(stdout);
 
-    }while(c != 'e');
+    }while(c != 'e');*/
 
     
 }
