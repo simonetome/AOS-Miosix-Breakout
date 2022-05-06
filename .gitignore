@@ -2,3 +2,8 @@
 .vscode
 miosix
 miosix_np_2
+main.d
+main.elf
+main.hex
+main.map
+main.o
