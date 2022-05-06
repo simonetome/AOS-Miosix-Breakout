@@ -7,8 +7,8 @@
 #include <algorithm>
 #include "miosix.h"
 #include <thread>
-#include "Arkanoid/settings.h"
-#include "Arkanoid/game.h"
+#include "Breakout/settings.h"
+#include "Breakout/game.h"
 
 #include "interfaces/gpio.h"
 
@@ -23,6 +23,7 @@ int main()
 	int selected = MEDIUM;
 	bool selecting = true;
 	bool quit = false;
+	bool is_changed = true;
 	
 	/*reset*/
 	std::printf("\e[1;1H\e[2J\n");
@@ -30,15 +31,15 @@ int main()
 
 	struct termios t;
 
+	std::unique_ptr<miosix::GpioPin> move_down = std::make_unique<miosix::GpioPin>(GPIOD_BASE,6);
+	std::unique_ptr<miosix::GpioPin> move_up = std::make_unique<miosix::GpioPin>(GPIOD_BASE,7);
+	std::unique_ptr<miosix::GpioPin> select = std::make_unique<miosix::GpioPin>(GPIOD_BASE,4);
+
 	/* Menu */
 	do{
 
 		char c;		
 		int lastD=0,lastU=0,lastS=0;
-
-		miosix::GpioPin *move_down = new miosix::GpioPin(GPIOD_BASE,6);
-		miosix::GpioPin *move_up = new miosix::GpioPin(GPIOD_BASE,7);
-		miosix::GpioPin *select = new miosix::GpioPin(GPIOD_BASE,4);
 
 		select ->mode(miosix::Mode::INPUT);
 		move_down ->mode(miosix::Mode::INPUT);
@@ -59,70 +60,80 @@ int main()
 
 
 		do{
-			/*
-			//keyboard input
-			tcgetattr(STDIN_FILENO,&t);
-			t.c_lflag &= ~ECHO;
-			t.c_lflag &= ~(ICANON);
-			tcsetattr(STDIN_FILENO,TCSANOW,&t);
-			
-			c=getchar();
-
-			tcgetattr(STDIN_FILENO,&t);
-			t.c_lflag |= ECHO;
-			t.c_lflag |= (ICANON);
-			tcsetattr(STDIN_FILENO,TCSANOW,&t);
-			fflush(stdout);
-
-			if(c=='d')
+							
+			if(BUTTON)
 			{
-				selected = std::min(selected+1,QUIT);
+				//button input
+				is_changed=false;
+				//std::this_thread::sleep_for(std::chrono::milliseconds(50));
+				int valU=move_up->value();
+				int valD=move_down->value();
+				int valS=select->value();
 
-			}else if(c=='a')
-			{
-				selected = std::max(selected-1,EASY);
-
-			}
-			else if(c=='e')
-			{
-				selecting = false;
-				if(selected == QUIT)
+				if(lastD==1 && valD==0)
 				{
-					quit = true;
-				}
-			}*/
+					selected = std::min(selected+1,QUIT);
+					is_changed=true;
 
-			//button input
-			bool is_change=false;
-			//std::this_thread::sleep_for(std::chrono::milliseconds(50));
-			int valU=move_up->value();
-			int valD=move_down->value();
-			int valS=select->value();
-
-			if(lastD==1 && valD==0)
-			{
-				selected = std::min(selected+1,QUIT);
-				is_change=true;
-
-			}else if(lastU==1 && valU==0)
-			{
-				selected = std::max(selected-1,EASY);
-				is_change=true;
-
-			}
-			else if(lastS==1 && valS==0)
-			{
-				selecting = false;
-				if(selected == QUIT)
+				}else if(lastU==1 && valU==0)
 				{
-					quit = true;
-				}
-			}
-			lastD=valD;
-			lastU=valU;
-			lastS=valS;
+					selected = std::max(selected-1,EASY);
+					is_changed=true;
 
-			if(is_change)
+				}
+				else if(lastS==1 && valS==0)
+				{
+					selecting = false;
+					if(selected == QUIT)
+					{
+						quit = true;
+					}
+				}
+				lastD=valD;
+				lastU=valU;
+				lastS=valS;
+			}
+			else
+			{
+				//keyboard input
+				tcgetattr(STDIN_FILENO,&t);
+				t.c_lflag &= ~ECHO;
+				t.c_lflag &= ~(ICANON);
+				tcsetattr(STDIN_FILENO,TCSANOW,&t);
+				is_changed = true;
+				c=getchar();
+
+				tcgetattr(STDIN_FILENO,&t);
+				t.c_lflag |= ECHO;
+				t.c_lflag |= (ICANON);
+				tcsetattr(STDIN_FILENO,TCSANOW,&t);
+				fflush(stdout);
+
+				if(c=='d')
+				{
+					selected = std::min(selected+1,QUIT);
+					is_changed = true;
+
+				}else if(c=='a')
+				{
+					selected = std::max(selected-1,EASY);
+					is_changed = true;
+
+				}
+				else if(c=='e')
+				{
+					selecting = false;
+					if(selected == QUIT)
+					{
+						quit = true;
+						is_changed = true;
+					}
+				}
+
+			}
+
+
+			if(is_changed)
 				switch (selected)
 				{
 				case EASY:
@@ -159,7 +170,7 @@ int main()
 				default:
 					break;
 				}
-
+			is_changed = false;
 
 		}while(selecting);
 
@@ -176,7 +187,7 @@ int main()
 
 	std::printf("\e[1;1H\e[2J\n");
     std::fflush(stdout);
-
+	
 	return 0;
 
 }
