@@ -31,8 +31,8 @@ main.o: main.cpp miosix/miosix.h miosix/interfaces/arch_registers.h \
  miosix/stdlib_integration/libstdcpp_integration.h miosix/kernel/error.h \
  miosix/kernel/kernel.h miosix/kernel/sync.h miosix/kernel/queue.h \
  miosix/kernel/error.h miosix/util/util.h miosix/config/miosix_settings.h \
- Arkanoid/game.h Arkanoid/canvas.h Arkanoid/block.h Arkanoid/shape.h \
- Arkanoid/paddle.h Arkanoid/sphere.h
+ Breakout/settings.h Breakout/game.h Breakout/canvas.h Breakout/block.h \
+ Breakout/shape.h Breakout/paddle.h Breakout/sphere.h Breakout/obstacle.h
 
 miosix/miosix.h:
 
@@ -120,14 +120,18 @@ miosix/util/util.h:
 
 miosix/config/miosix_settings.h:
 
-Arkanoid/game.h:
+Breakout/settings.h:
 
-Arkanoid/canvas.h:
+Breakout/game.h:
 
-Arkanoid/block.h:
+Breakout/canvas.h:
 
-Arkanoid/shape.h:
+Breakout/block.h:
 
-Arkanoid/paddle.h:
+Breakout/shape.h:
 
-Arkanoid/sphere.h:
+Breakout/paddle.h:
+
+Breakout/sphere.h:
+
+Breakout/obstacle.h:
