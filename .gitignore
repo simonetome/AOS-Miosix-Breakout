@@ -7,3 +7,5 @@ main.elf
 main.hex
 main.map
 main.o
+Breakout/*.d
+Breakout/*.o
