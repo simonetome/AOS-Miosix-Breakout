@@ -1,6 +1,8 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include <string>
+
 #define COLS 36
 #define ROWS 40
 
@@ -33,12 +35,13 @@
 #define TOPWALLROW ROWOFFSET - 1
 
 
-//define paddle feature
+// paddle settings
 #define PADDLEWIDTH 12
 #define PADDLELIMITUP 20
 #define PADDLELIMITBOTTOM 36
 #define PADDLEROW 35
 
+// some unicode escape sequences
 #define UPBLOCK "\u2580"
 #define VERTBLOCK "\u2589"
 #define LOWERBLOCK "\u2584"
@@ -46,6 +49,10 @@
 #define BRICK "\u25A9"
 #define FULLBLOCK "\u2588"
 
+// the sphere is defined incorporating the color for performance reasons 
+#define SPHERE "\u001b[92m\u25c9\033[0m"
+
+// obstacles settings
 #define OBSTACLE "\u2593"
 #define OBSTACLEWIDTH 9
 #define NUM_OBSTACLES_MEDIUM 1
@@ -56,7 +63,7 @@
 #define OBSTACLES_DX_LIMIT RIGHTWALLCOL - OBSTACLEWIDTH 
 
 
-//color
+//color escape sequences 
 #define RED "\u001b[31m"
 #define GREEN "\u001b[32m"
 #define YELLOW "\u001b[33m"
@@ -75,8 +82,14 @@
 
 #define BUTTON 0 
 
-
+// reset to main color 
 #define RESET_COLOR "\033[0m"
+
+// ansii art 
+
+                                                                                
+                                                   
+
 
 
 #define GAMEOVER   "\x1b[12;%dH _____ _____ _____ _____    _____ _____ _____ _____ \x1b[13;%dH|   __|  _  |     |   __|  |     |  |  |   __| __  |\x1b[14;%dH|  |  |     | | | |   __|  |  |  |  |  |   __|    -|\x1b[15;%dH|_____|__|__|_|_|_|_____|  |_____|____/|_____|__|__|"
@@ -85,25 +98,15 @@
 
 #define BREAKOUT  "\x1b[12;%dH _____ _____ _____ _____ _____ _____ _____ _____ \x1b[13;%dH| __  | __  |   __|  _  |  |  |     |  |  |_   _|\x1b[14;%dH| __ -|    -|   __|     |    -|  |  |  |  | | |\x1b[15;%dH|_____|__|__|_____|__|__|__|__|_____|_____| |_|"  
 
-
-#define SPHERE "\u001b[92m\u25c9\033[0m"
-//#define SPHERE "\033[0;31m\u2588\033[0m"
-
-#define BALL "\u2b24"
-
-
-
+// difficulty integers
 #define EASY 0
 #define MEDIUM 1
 #define HARD 2
 #define QUIT 3
 
+// speed of the ball according to the difficulty (ms of the sleeep for the main thread)
 #define EASY_SPEED 80
 #define MEDIUM_SPEED 65
 #define HARD_SPEED 55
-
-
-
-
 
 #endif
