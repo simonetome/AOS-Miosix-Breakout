@@ -10,14 +10,16 @@
 
 #include "../miosix/interfaces/gpio.h"
 
-std::mutex stdout_mutex;
+//std::mutex stdout_mutex; --> not needed as printf is POSIX standard
 
 struct termios t;
 
 using namespace std;
 
+
+
 void Canvas::reset(){
-    std::printf("\e[1;1H\e[2J\n");
+    printf("\e[1;1H\e[2J\n");
     fflush(stdout);
 }
 
@@ -25,21 +27,18 @@ void Canvas::drawWalls(){
 
     //vertical walls
     for(int i = TOPWALLROW; i <= TOPWALLROW+VERTWALLLENGTH; ++i){
-        std::printf("\x1b[%d;%dH%s",i,LEFTWALLCOL-1,FULLBLOCK);
-        std::printf("\x1b[%d;%dH%s",i,LEFTWALLCOL,FULLBLOCK);
-
-        std::printf("\x1b[%d;%dH%s",i,RIGHTWALLCOL,FULLBLOCK);
-        std::printf("\x1b[%d;%dH%s",i,RIGHTWALLCOL+1,FULLBLOCK);
+        printf("\x1b[%d;%dH%s",i,LEFTWALLCOL-1,FULLBLOCK);
+        printf("\x1b[%d;%dH%s",i,LEFTWALLCOL,FULLBLOCK);
+        printf("\x1b[%d;%dH%s",i,RIGHTWALLCOL,FULLBLOCK);
+        printf("\x1b[%d;%dH%s",i,RIGHTWALLCOL+1,FULLBLOCK);
         fflush(stdout);
     }
 
     //horizontal wall
     for(int i = LEFTWALLCOL; i<= RIGHTWALLCOL; ++i){
-        std::printf("\x1b[%d;%dH%s",TOPWALLROW,i,FULLBLOCK);
+        printf("\x1b[%d;%dH%s",TOPWALLROW,i,FULLBLOCK);
         fflush(stdout);
     }
-
-
 }
 
 
@@ -47,10 +46,10 @@ void Canvas::drawObject(const Shape& object){
     int width = object.getWidth();
     int row = object.getRow();
     int col = object.getCol();
-    std::string shape = object.getShape();
+    string shape = object.getShape();
     this->changeColor(object.getColor());
     for(int i = 0; i < width; ++i){
-        std::printf("\x1b[%d;%dH%s",row,i+col,shape.c_str());
+        printf("\x1b[%d;%dH%s",row,i+col,shape.c_str());
         fflush(stdout);
     }
     this->changeColor(RESET_COLOR);
@@ -60,10 +59,10 @@ void Canvas::deleteObject(const Shape& object){
     int width = object.getWidth();
     int row = object.getRow();
     int col = object.getCol();
-    std::lock_guard<mutex> lck(stdout_mutex);
+    //std::lock_guard<mutex> lck(stdout_mutex);
 
     for(int i = 0; i < width; ++i){
-        std::printf("\x1b[%d;%dH%s",row,i+col," ");
+        printf("\x1b[%d;%dH%s",row,i+col," ");
         fflush(stdout);
     }
 }
@@ -72,11 +71,12 @@ void Canvas::movePaddle(const Shape& object,const int& rowDirection){
     
     int row = object.getRow();
     int col = object.getCol();
-    std::lock_guard<mutex> lck(stdout_mutex);
+    
+    //std::lock_guard<mutex> lck(stdout_mutex);
     
     if(rowDirection == 1){ // move right
-        std::printf("\x1b[%d;%dH%s",row,col," ");
-        std::printf("\x1b[%d;%dH%s",row,col+PADDLEWIDTH,FULLBLOCK);
+        printf("\x1b[%d;%dH%s",row,col," ");
+        printf("\x1b[%d;%dH%s",row,col+PADDLEWIDTH,FULLBLOCK);
         printf("\x1b[999;999H");
         fflush(stdout); 
     }
@@ -91,10 +91,11 @@ void Canvas::moveSphere(const Shape& object,const int& rowDirection,const int& c
     
     int row = object.getRow();
     int col = object.getCol();
-    std::lock_guard<mutex> lck(stdout_mutex);
+    
+    //std::lock_guard<mutex> lck(stdout_mutex);
 
-    std::printf("\x1b[%d;%dH%s",row,col," ");
-    std::printf("\x1b[%d;%dH%s",row+rowDirection,col+colDirection,SPHERE);
+    printf("\x1b[%d;%dH%s",row,col," ");
+    printf("\x1b[%d;%dH%s",row+rowDirection,col+colDirection,SPHERE);
     printf("\x1b[999;999H");
     fflush(stdout);
 
@@ -134,13 +135,13 @@ void Canvas::write(bool won){
     printf("\x1b[999;999H");
     fflush(stdout);
 
-    //miosix::GpioPin *select = new miosix::GpioPin(GPIOD_BASE,4);
+    
     std::unique_ptr<miosix::GpioPin> select = std::make_unique<miosix::GpioPin>(GPIOD_BASE,4);
-	select ->mode(miosix::Mode::INPUT);
+	select->mode(miosix::Mode::INPUT);
 
-    if(BUTTON)
+    if(BUTTON) // Button input (settings.h)
     {
-        //BUTTON
+        
         int lastS=0;
         while(true){
             int selection=select->value();
@@ -151,22 +152,12 @@ void Canvas::write(bool won){
     }
     else
     {
-        //Keyboard input
+        // Keyboard input (settings.h)
         char c = ' ';
         do{
-            tcgetattr(STDIN_FILENO,&t);
-            t.c_lflag &= ~ECHO;
-            t.c_lflag &= ~(ICANON);
-            tcsetattr(STDIN_FILENO,TCSANOW,&t);
-
+ 
+            //keyboard input
             c=getchar();
-
-            tcgetattr(STDIN_FILENO,&t);
-            t.c_lflag |= ECHO;
-            t.c_lflag |= (ICANON);
-            tcsetattr(STDIN_FILENO,TCSANOW,&t);
-            fflush(stdout);
-
         }while(c != 'e');
     }
 
@@ -174,7 +165,6 @@ void Canvas::write(bool won){
 
 
 void Canvas::changeColor(const std::string& color){
-
-    std::cout<<color;
+    cout<<color;
     fflush(stdout);
 }

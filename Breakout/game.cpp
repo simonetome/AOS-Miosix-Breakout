@@ -13,9 +13,6 @@
 
 #include "../miosix/interfaces/gpio.h"
 
-//using namespace miosix;
-//variabile condivisa dai due thread 
-
 
 // boolean var for ending the game 
 std::atomic<bool> gameNotEnd;
@@ -23,6 +20,7 @@ std::atomic<bool> gameNotEnd;
 // sync mutexes
 std::mutex paddle_mutex;
 
+// random generators
 std::random_device rd; 
 std::mt19937 gen(rd());
 std::uniform_int_distribution<> distr_row(OBSTACLES_BOTTOM_LIMIT,OBSTACLES_TOP_LIMIT); 
@@ -97,14 +95,12 @@ Game::Game(int dif){
 void Game::inputController(){
     
     char c,lastC;
-    struct termios t;
     
 	printf("\x1b[999;999H");     //cursor to the last cell of the terminal
     fflush(stdout);
     
     std::unique_ptr<miosix::GpioPin> move_right = std::make_unique<miosix::GpioPin>(GPIOD_BASE,6);
     std::unique_ptr<miosix::GpioPin> move_left = std::make_unique<miosix::GpioPin>(GPIOD_BASE,7);
-    //miosix::GpioPin *move_left = new miosix::GpioPin(GPIOD_BASE,7);
 
     move_right ->mode(miosix::Mode::INPUT);
     move_left ->mode(miosix::Mode::INPUT);
@@ -153,17 +149,9 @@ void Game::inputController(){
         {
             //input using the keyboard
             //set option to take in input only one character
-            tcgetattr(STDIN_FILENO,&t);
-            t.c_lflag &= ~ECHO;
-            t.c_lflag &= ~(ICANON);
-            tcsetattr(STDIN_FILENO,TCSANOW,&t);
-            
-            c=getchar();
+            //keyboard input
 
-            tcgetattr(STDIN_FILENO,&t);
-            t.c_lflag |= ECHO;
-            t.c_lflag |= (ICANON);
-            tcsetattr(STDIN_FILENO,TCSANOW,&t);
+            c=getchar();
 
             //move right
             if(c=='d')
@@ -224,6 +212,7 @@ void Game::startGame(){
 
     bool won = false;
 
+    // main loop of the game 
     while(1){
         switch (this->difficulty)
         {
@@ -254,8 +243,7 @@ void Game::startGame(){
         paddle_mutex.unlock();
         paddledx = paddlesx + PADDLEWIDTH -1;
         
-        // check win 
-        // check loss 
+        // check loss and win 
 
         if(sphereRow == paddle->getRow()+1 ){
             won = false;
@@ -282,7 +270,7 @@ void Game::startGame(){
         }
     
 
-        for (int i = 0; i < blocks.size(); ++i) {
+        for (unsigned int i = 0; i < blocks.size(); ++i) {
             
             blocksx = blocks[i] -> getCol();
             blockdx = blocksx + BRICKWIDTH - 1;
@@ -327,8 +315,9 @@ void Game::startGame(){
             }
         }
 
+        // check collision with an obstacle
         if(obstacles_present){
-            for (int i = 0; i < obstacles.size(); ++i) {
+            for (unsigned int i = 0; i < obstacles.size(); ++i) {
             
                 obstaclesx = obstacles[i] -> getCol();
                 obstacledx = obstaclesx + OBSTACLEWIDTH - 1;
@@ -354,7 +343,7 @@ void Game::startGame(){
             }
         }
         
-
+        // check collisions with walls 
         if(sphere -> getColDir() == 1){ //right wall 
             if(sphereCol == RIGHTWALLCOL - 1 && (sphereRow >= TOPWALLROW + 1 && sphereRow <= TOPWALLROW + 1 +VERTWALLLENGTH)){
                 sphere -> setColDir(-1);
@@ -372,20 +361,14 @@ void Game::startGame(){
         }
 
 
-
-
         canvas.moveSphere(*sphere,sphere->getRowDir(),sphere->getColDir());
         sphere->updatePosition(sphere->getRowDir(),sphere->getColDir());
 
-    }
+    }// end loop 
     
     gameNotEnd.store(false);
     inputThread.join();
 
     canvas.write(won);
 
-}
-
-int Game::getScore(){
-    return this->score;
 }
