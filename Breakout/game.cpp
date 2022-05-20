@@ -114,7 +114,7 @@ void Game::inputController(){
             //BUTTON input
             //sleep to read the button value every 40ms
             std::this_thread::sleep_for(std::chrono::milliseconds(40));
-            //move_right
+            
             if(move_right->value()==1 && paddle->getCol() + PADDLEWIDTH  < RIGHTWALLCOL)
             {
 
