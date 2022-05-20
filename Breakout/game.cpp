@@ -94,7 +94,7 @@ Game::Game(int dif){
 
 void Game::inputController(){
     
-    char c,lastC;
+    char c;
     
 	printf("\x1b[999;999H");     //cursor to the last cell of the terminal
     fflush(stdout);
@@ -115,33 +115,24 @@ void Game::inputController(){
             //sleep to read the button value every 40ms
             std::this_thread::sleep_for(std::chrono::milliseconds(40));
             //move_right
-            if(move_right->value()==1)
+            if(move_right->value()==1 && paddle->getCol() + PADDLEWIDTH  < RIGHTWALLCOL)
             {
-                if(lastC=='r' && paddle->getCol() + PADDLEWIDTH  < RIGHTWALLCOL)
-                {
-                    paddle_mutex.lock();
-                    canvas.movePaddle(*paddle,1);
-                    paddle->setCol(paddle->getCol()+1);
-                    paddle_mutex.unlock();
-                }
-                
+
+                paddle_mutex.lock();
+                canvas.movePaddle(*paddle,1);
+                paddle->setCol(paddle->getCol()+1);
+                paddle_mutex.unlock();
                 printf("\x1b[999;999H");
                 fflush(stdout);
-                lastC='r';
                 
-            }else if(move_left->value()==1) //move left
+            }else if(move_left->value()==1 && paddle->getCol() > LEFTWALLCOL +1) //move left
             {
-                if(lastC=='l' && paddle->getCol() > LEFTWALLCOL +1)
-                {
-                    paddle_mutex.lock();
-                    canvas.movePaddle(*paddle,-1);
-                    paddle->setCol(paddle->getCol()-1);
-                    paddle_mutex.unlock();
-                }
-            
+                paddle_mutex.lock();
+                canvas.movePaddle(*paddle,-1);
+                paddle->setCol(paddle->getCol()-1);
+                paddle_mutex.unlock();
                 printf("\x1b[999;999H");
                 fflush(stdout);
-                lastC='l';
                 
             }
         }
@@ -154,33 +145,23 @@ void Game::inputController(){
             c=getchar();
 
             //move right
-            if(c=='d')
+            if(c=='d' && paddle->getCol() + PADDLEWIDTH  < RIGHTWALLCOL)
             {
-                if(lastC=='d' && paddle->getCol() + PADDLEWIDTH  < RIGHTWALLCOL)
-                {
-                    paddle_mutex.lock();
-                    canvas.movePaddle(*paddle,1);
-                    paddle->setCol(paddle->getCol()+1);
-                    paddle_mutex.unlock();
-                }
-                
+                paddle_mutex.lock();
+                canvas.movePaddle(*paddle,1);
+                paddle->setCol(paddle->getCol()+1);
+                paddle_mutex.unlock();
                 printf("\x1b[999;999H");
                 fflush(stdout);
-                lastC=c;
                 
-            }else if(c=='a') //move left
+            }else if(c=='a' && paddle->getCol() > LEFTWALLCOL +1) //move left
             {
-                if(lastC=='a' && paddle->getCol() > LEFTWALLCOL +1)
-                {
-                    paddle_mutex.lock();
-                    canvas.movePaddle(*paddle,-1);
-                    paddle->setCol(paddle->getCol()-1);
-                    paddle_mutex.unlock();
-                }
-            
+                paddle_mutex.lock();
+                canvas.movePaddle(*paddle,-1);
+                paddle->setCol(paddle->getCol()-1);
+                paddle_mutex.unlock();
                 printf("\x1b[999;999H");
                 fflush(stdout);
-                lastC=c;
                 
             }
 
