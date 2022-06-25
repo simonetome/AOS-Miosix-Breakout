@@ -66,7 +66,7 @@ Then open a new terminal and run:
 ```
 resize -s 45 70 
 ```
-to resize the window with xterm, and then run:
+to resize the window with xterm, and then run (tested baud rate is 115200):
 
 ```
 screen /dev/ttyUSB0 <baud-rate>
