@@ -1,6 +1,5 @@
 #ignore 
 .vscode
-miosix
 miosix_np_2
 main.d
 main.elf

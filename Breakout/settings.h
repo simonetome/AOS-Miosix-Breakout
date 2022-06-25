@@ -80,7 +80,7 @@
 #define BRIGHTCYAN "\u001b[96m"
 
 
-#define BUTTON 0 
+#define BUTTON 1
 
 // reset to main color 
 #define RESET_COLOR "\033[0m"
